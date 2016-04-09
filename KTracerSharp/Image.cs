@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
+using System.IO;
+#if !__MonoCS__
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+#endif
 using OpenTK;
+using OpenTK.Graphics;
 
 namespace KTracerSharp {
 	public class Image {
@@ -15,7 +15,29 @@ namespace KTracerSharp {
 			Width = vRes;
 			m_data = new Vector4[hRes,vRes];
 		}
-
+		/**
+		Need this for linux since I can't find a png library that works on linux...GOing to use imagemagick to convert
+		on running program
+		*/
+		public void WriteToPPM(string FileName) {
+			
+			StreamWriter text = new StreamWriter(FileName);
+			text.Write("P6" + " ");
+			text.Write(Width);
+			text.Write(" ");
+			text.Write(Height);
+			text.Write(" "+"255" + " ");
+			text.Close();
+			BinaryWriter ofs = new BinaryWriter(new FileStream(FileName, FileMode.Append));
+			for (int i = 0; i < Height; i++) {
+				for (int j = 0; j < Width; j++) {
+					ofs.Write((byte)(Math.Min(1.0f, m_data[j,i].X)*255));
+					ofs.Write((byte)(Math.Min(1.0f, m_data[j,i].Y)*255));
+					ofs.Write((byte)(Math.Min(1.0f, m_data[j,i].Z)*255));
+				}
+			}
+			ofs.Close();
+	}
 		public void WriteToPNG(string FileName) {
 			using (var b = new Bitmap(Width, Height)) {
 				for(var i = 0; i < Height; i++) {
