@@ -10,7 +10,7 @@ namespace KTracerSharp {
 		}
 
 		public float Radius { get; set; }
-		private float RadiusSquared { get; }
+		private float RadiusSquared { get; set;}
 
 		public override bool Intersect(Ray ray, ref float tMin, out Vector3 intPoint, out Vector3 normal) {
 			var xo = ray.Start.X;

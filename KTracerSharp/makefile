@@ -2,7 +2,9 @@ PHONY: run build clean
 
 run : build
 	@./Graphics.exe ${ARGS}
+	@./ConvertToPng.sh
+	@rm out.ppm
 build :
-	@dmcs -lib: -r:OpenTK.dll Program.cs -out:Graphics.exe
+	@dmcs  -r:OpenTK.dll *.cs -out:Graphics.exe
 clean : 
 	@rm Graphics.exe

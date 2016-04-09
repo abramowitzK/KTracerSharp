@@ -38,6 +38,7 @@ namespace KTracerSharp {
 			}
 			ofs.Close();
 	}
+#if !__MonoCS__
 		public void WriteToPNG(string FileName) {
 			using (var b = new Bitmap(Width, Height)) {
 				for(var i = 0; i < Height; i++) {
@@ -53,6 +54,7 @@ namespace KTracerSharp {
 				b.Save(FileName, ImageFormat.Png);
 			}
 		}
+#endif
 		public void Set(int i, int j, Vector4 data) {
 				m_data[i,j] = data;
 		}

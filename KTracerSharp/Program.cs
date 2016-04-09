@@ -27,8 +27,8 @@ namespace KTracerSharp {
 			var i = scene.Render();
 			watch.Stop();
 			Console.WriteLine(watch.ElapsedMilliseconds/1000.0);
-			i.WriteToPPM("image.ppm");
-			i.WriteToPNG("image.png");
+			i.WriteToPPM("out.ppm");
+	//		i.WriteToPNG("out.png");
 		}
 	}
 }

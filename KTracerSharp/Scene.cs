@@ -38,7 +38,9 @@ namespace KTracerSharp {
 				for (int j = 0; j < height; j++) {
 					im.Set(i, j, rays[i, j].Trace(this, 1));
 				}
+#if !__MonoCS__
 				Task.Delay(0);
+#endif
 			}
 		}
 
