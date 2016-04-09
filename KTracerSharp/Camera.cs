@@ -23,7 +23,7 @@ namespace KTracerSharp {
 		public Ray[,] GenerateRays(int hRes, int vRes) {
 			Ray[,] rays = new Ray[hRes,vRes];
 			Vector3 y = Up;
-			float s_j = DistanceToPlane * 2.0f * (float)Math.Tan(  ViewAngle / 2.0f);
+			var s_j = DistanceToPlane * 2.0f * (float)Math.Tan(  ViewAngle / 2.0f);
 			float s_k = s_j * (vRes / (float)hRes);
 			Vector3 posOfPixel = Position + (DistanceToPlane * Forward) - (((float)(s_j / 2.0)) * Right) + (((float)(s_k / 2.0)) * y);
 			for (int i = 0; i < hRes; i++) {

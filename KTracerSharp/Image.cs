@@ -32,7 +32,7 @@ namespace KTracerSharp {
 			}
 		}
 		public void Set(int i, int j, Vector4 data) {
-			m_data[i,j] = data;
+				m_data[i,j] = data;
 		}
 
 		private Vector4[,] m_data;
