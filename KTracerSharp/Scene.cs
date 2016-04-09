@@ -26,7 +26,8 @@ namespace KTracerSharp {
 			var threads = new Task[8];
 			int index = 1024/8;
 			for (var i = 0; i < 8; i++) {
-				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, i*index, (i + 1)*(index), height));
+				int temp = i;
+				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*(index), height));
 			}
 			Task.WaitAll(threads);
 			return im;
