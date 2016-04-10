@@ -22,15 +22,15 @@ namespace KTracerSharp {
 		}
 	
 		public Vector4 Trace(Scene s, int d) {
-			float tmin = 1e6f;
+			float tmin = float.MaxValue;
 			float closestTmin = float.MaxValue;
-			Vector3 inter;//not using these yet.
-			Vector3 norm;
+			Vector3 inter = Vector3.Zero;//not using these yet.
+			Vector3 norm = Vector3.Zero;
 			RenderObject closestObj = null;
-			foreach (var obj in s.Objects) {
-				if (obj.Intersect(this, ref tmin, out inter, out norm)) {
+			for(var i = 0; i < s.Objects.Count; i++) {
+				if (s.Objects[i].Intersect(this, ref tmin, ref inter, ref norm)) {
 					if (tmin < closestTmin) {
-						closestObj = obj;
+						closestObj = s.Objects[i];
 						closestTmin = tmin;
 					}
 				}

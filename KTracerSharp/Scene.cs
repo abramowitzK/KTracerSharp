@@ -1,40 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using OpenTK;
+
 namespace KTracerSharp {
 	public class Scene {
-		private Camera Cam { get; set; }
 		public Scene() {
-			Cam = new Camera(new Vector3(0.0f, 0.0f, -10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f), 45.0f, 10.0f);
+			Cam = new Camera(new Vector3(0.0f, 0.0f, -10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f), 45.0f,
+				10.0f);
 			Objects = new List<RenderObject>();
 		}
+
+		private Camera Cam { get; }
+
+		public IList<RenderObject> Objects { get; }
+
 		public Image Render() {
-			int height = 1024;
-			int width = 1024;
-			Image im = new Image(width, height);
+			const int height = 1024;
+			const int width = 1024;
+			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
-			/*for (int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
-					im.Set(i, j, rays[i,j].Trace(this, 1));
-				}
-			}*/
-			var threads = new Task[8];
-			int index = 1024/8;
-			for (var i = 0; i < 8; i++) {
-				int temp = i;
-				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*(index), height));
+			var threads = new Task[Environment.ProcessorCount];
+			var index = height/Environment.ProcessorCount;
+			for (var i = 0; i < Environment.ProcessorCount; i++) {
+				var temp = i;
+				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*index, height));
 			}
 			Task.WaitAll(threads);
 			return im;
 		}
 
 		public void RenderTask(ref Image im, Ray[,] rays, int start, int end, int height) {
-			for (int i = start; i < end; i++) {
-				for (int j = 0; j < height; j++) {
+			for (var i = start; i < end; i++) {
+				for (var j = 0; j < height; j++) {
 					im.Set(i, j, rays[i, j].Trace(this, 1));
 				}
 #if !__MonoCS__
@@ -46,7 +44,5 @@ namespace KTracerSharp {
 		public void AddObject(RenderObject obj) {
 			Objects.Add(obj);
 		}
-
-		public IList<RenderObject> Objects { get; private set; }
 	}
 }

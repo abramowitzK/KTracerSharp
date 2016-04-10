@@ -12,7 +12,7 @@ namespace KTracerSharp {
 		public float Radius { get; set; }
 		private float RadiusSquared { get; set;}
 
-		public override bool Intersect(Ray ray, ref float tMin, out Vector3 intPoint, out Vector3 normal) {
+		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {
 			var xo = ray.Start.X;
 			var yo = ray.Start.Y;
 			var zo = ray.Start.Z;
@@ -26,17 +26,12 @@ namespace KTracerSharp {
 			var descrim = b*b - 4*c;
 			const float epsilon = 0.00000000001f;
 			if (descrim < epsilon) {
-
-				intPoint = Vector3.Zero;
-				normal = Vector3.Zero;
 				return false;
 			}
 			var t0 = (-b - (float) Math.Sqrt(b*b - 4*c))/2.0f;
 			var t1 = (-b + (float) Math.Sqrt(b*b - 4*c))/2.0f;
 			if (t0 < epsilon) {
 				if (t1 < epsilon) {
-					intPoint = Vector3.Zero;
-					normal = Vector3.Zero;
 					return false;
 				}
 				tMin = t1;

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
 namespace KTracerSharp {
 	class Program {
@@ -21,14 +17,16 @@ namespace KTracerSharp {
 			mesh.Translate(0, -1.5f, 0);
 			mesh2.Translate(0, 0.75f, 0);
 			scene.AddObject(mesh);
-			//scene.AddObject(mesh2);
+			scene.AddObject(mesh2);
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 			var i = scene.Render();
 			watch.Stop();
 			Console.WriteLine(watch.ElapsedMilliseconds/1000.0);
+#if __MonoCS__
 			i.WriteToPPM("out.ppm");
-	//		i.WriteToPNG("out.png");
+#else
+			i.WriteToPNG("out.png");
 		}
 	}
 }

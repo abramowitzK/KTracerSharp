@@ -21,27 +21,21 @@ namespace KTracerSharp {
 			m_indices = indices;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public override bool Intersect(Ray ray, ref float tMin, out Vector3 intPoint, out Vector3 normal) {
-			var tmin = 1000000f;
-			Vector3 intPoint2 = Vector3.Zero;
-			Vector3 normal2 = Vector3.Zero;
+		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {
+			var start = ray.Start;
+			var dir = ray.Dir;
 			for (var i = 0; i < m_indices.Count; i += 3) {
 				var v1 = m_vertices[m_indices[i]];
 				var v2 = m_vertices[m_indices[i + 1]];
 				var v3 = m_vertices[m_indices[i + 2]];
-				float t;
-
-				if (RayIntersectsTriangle(ray, v1, v2, v3, out t, out intPoint2, out normal2)) {
-					if (t < tmin) {
-						tmin = t;
+				float t = 0;
+				if (RayIntersectsTriangle(ref start, ref dir,ref v1, ref v2, ref v3, ref t, ref intPoint, ref normal)) {
+					if (t < tMin) {
+						tMin = t;
 					}
 				}
 			}
-			if (tmin < 100000)
-				tMin = tmin;
-			intPoint = intPoint2;
-			normal = normal2;
-			return tmin < 1000000 && tmin > 0;
+			return tMin < 1000000.0f;
 		}
 
 		public override void Rotate(float x, float y, float z) {
@@ -62,41 +56,30 @@ namespace KTracerSharp {
 			return ObjectType.TriangleMesh;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool RayIntersectsTriangle(Ray ray, Vector3 v1, Vector3 v2, Vector3 v3, out float t, out Vector3 intPoint,
-			out Vector3 normal) {
+		private bool RayIntersectsTriangle(ref Vector3 p, ref Vector3 d, ref Vector3 v1, ref Vector3 v2, ref Vector3 v3, ref float t, ref Vector3 intPoint,
+			ref Vector3 normal) {
 			//Moller-Trumbore algorithm
 			//https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-			var p = ray.Start;
-			var d = ray.Dir;
 			var e1 = v2 - v1;
 			var e2 = v3 - v1;
 			const float epsilon = 0.00000001f;
 			var h = Vector3.Cross(d, e2);
 			var a = Vector3.Dot(e1, h);
-			if (a > -epsilon && a < epsilon) {
-				t = float.MaxValue;
-				intPoint = Vector3.Zero;
-				normal = Vector3.Zero;
+			if (a < epsilon && a > -epsilon) {
 				return false;
 			}
-			var f = 1.0f/a;
+			a = 1.0f/a;
 			var s = p - v1;
-			var u = Vector3.Dot(s, h)*f;
+			var u = Vector3.Dot(s, h)*a;
 			if (u < 0.0 || u > 1.0) {
-				t = float.MaxValue;
-				intPoint = Vector3.Zero;
-				normal = Vector3.Zero;
 				return false;
 			}
-			var q = Vector3.Cross(s, e1);
-			var v = Vector3.Dot(d, q)*f;
+			h = Vector3.Cross(s, e1);
+			var v = Vector3.Dot(d, h)*a;
 			if (v < 0.0 || u + v > 1.0) {
-				t = float.MaxValue;
-				intPoint = Vector3.Zero;
-				normal = Vector3.Zero;
 				return false;
 			}
-			t = Vector3.Dot(e2, q)*f;
+			t = Vector3.Dot(e2, h)*a;
 			intPoint = Vector3.Zero;
 			normal = Vector3.Zero;
 			return !(t < 0);
