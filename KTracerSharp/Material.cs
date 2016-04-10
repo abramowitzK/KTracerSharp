@@ -7,15 +7,22 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace KTracerSharp {
+	public enum MaterialType {
+		None,
+		Phong,
+	}
+
 	public class Material {
 		public float Shinyness { get; set; }
 		public Vector4 DiffuseColor { get; set; }
 		public Vector4 SpecularColor { get; set; }
+		public MaterialType MType { get; set; }
 
 		public Material(float shinyness, Vector4 dColor, Vector4 sColor) {
 			Shinyness = shinyness;
 			DiffuseColor = dColor;
 			SpecularColor = sColor;
+			MType = MaterialType.None;
 		}
 	}
 }

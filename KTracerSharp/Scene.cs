@@ -6,7 +6,7 @@ using OpenTK;
 namespace KTracerSharp {
 	public class Scene {
 		public Scene() {
-			Cam = new Camera(new Vector3(-10.0f, 10.0f, -10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(1.0f, -1f, 1.0f), 45.0f,
+			Cam = new Camera(new Vector3(-10.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(1.0f, 0f, 0.0f), 70.0f,
 				10.0f);
 			Objects = new List<RenderObject>();
 			Lights = new List<Light>();
@@ -20,11 +20,12 @@ namespace KTracerSharp {
 		public Image Render() {
 			const int height = 1024;
 			const int width = 1024;
+			int numThreads = 1;//Environment.ProcessorCount;
 			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
-			var threads = new Task[Environment.ProcessorCount];
-			var index = height/Environment.ProcessorCount;
-			for (var i = 0; i < Environment.ProcessorCount; i++) {
+			var threads = new Task[numThreads];
+			var index = height/numThreads;
+			for (var i = 0; i < numThreads; i++) {
 				var temp = i;
 				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*index, height));
 			}

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using OpenTK;
 
 namespace KTracerSharp {
@@ -39,19 +40,24 @@ namespace KTracerSharp {
 				var p3 = vertices[indices[i + 2]];
 				var u = p2 - p1;
 				var v = p3 - p1;
-				var n = Vector3.Cross(u, v);
+				var n = Vector3.Cross(u, v).Normalized();
 				faceNormals.Add(n);
 			}
 			for (var i = 0; i < indices.Count; i++) {
 				var f = i/3;
 				var v = indices[i];
-				normals[v] += faceNormals[f];
+				normals[v] = faceNormals[f];
 			}
 			for (var i = 0; i < normals.Count; i++) {
 				normals[i] = normals[i].Normalized();
 			}
-			CalcVertexNormals(indices, faceNormals, normals);
-			m_resourceMap[filename] = new TriangleMesh(vertices, indices, normals);
+			List<Vertex> verts = new List<Vertex>(new Vertex[indices.Count]);
+
+			for (var i = 0; i < indices.Count; i++) {
+				verts[i] = new Vertex(new Vector3( vertices[indices[i]]), new Vector3( normals[indices[i]]));
+			}
+			//CalcVertexNormals(indices, faceNormals, normals);
+			m_resourceMap[filename] = new TriangleMesh(verts, indices);
 		}
 
 		public TriangleMesh GetMesh(string filename) {

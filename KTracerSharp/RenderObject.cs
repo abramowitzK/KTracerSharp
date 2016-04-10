@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 
 namespace KTracerSharp {
 	public enum ObjectType {
@@ -12,8 +13,17 @@ namespace KTracerSharp {
 		public Vector3 Pos { get; set; }
 		public Quaternion Rot { get; set; }
 		public float Scale { get; set; }
-		public Material Mat { get; set; }
-
+		private Material m_material;
+		public Material Mat {
+			get { return m_material; }
+			set {
+				if (value == null)
+					throw new ArgumentNullException(nameof(value));
+				HasMaterial = value.MType != MaterialType.None;
+				m_material = value;
+			}
+		}
+		public bool HasMaterial { get; set; }
 		protected RenderObject(Vector3 pos, Quaternion rotation, float scale, Vector4 color) {
 			Pos = pos;
 			Rot = rotation;
