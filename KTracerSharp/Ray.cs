@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
 
@@ -42,6 +43,8 @@ namespace KTracerSharp {
 					bool blocked = false;
 					foreach(var o in s.Objects) {
 						blocked = o.Intersect(lightRay, ref tmin, ref inter, ref norm);
+						if (blocked)
+							break;
 					}
 					if (!blocked) {
 						var lightDir = l.Pos - lightRay.Start;

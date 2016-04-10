@@ -12,7 +12,7 @@ namespace KTracerSharp {
 			var scene = new Scene();
 			var s = new Sphere(new Vector3(1.0f, 0.0f, 0.0f), Quaternion.Identity, 1.0f, new Vector4(0.9f, 0.1f, 0.1f, 1.0f), 0.75f);
 			var s2 = new Sphere(new Vector3(3.0f, 0.0f, 0.0f), Quaternion.Identity, 1f, new Vector4(0.1f, 0.5f, 0.1f, 1.0f), 1f);
-			scene.AddLight(new Light(new Vector3(-10f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 0.1f));
+			scene.AddLight(new Light(new Vector3(-20f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 0.1f));
 			//scene.AddLight(new Light(new Vector3(10, 0f, 0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.1f));
 			scene.AddObject(s);
 			scene.AddObject(s2);
