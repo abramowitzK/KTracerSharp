@@ -45,8 +45,11 @@ namespace KTracerSharp {
 					}
 					if (!blocked) {
 						var lightDir = l.Pos - lightRay.Start;
+						var h = (lightDir + (this.Start-pHit)).Normalized();
 						float lD = l.Intensity*Math.Max(0, Vector3.Dot(nHit, lightDir));
+						float spec = (float)(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), 50.0));
 						col = Vector4.Add(col, new Vector4(closestObj.Color*lD));
+						col += spec*new Vector4(1f, 1f, 1f, 1f);
 					}
 					else {
 						col = Vector4.Add(col, (new Vector4(0.0f, 0.0f, 0.0f, 1.0f)));

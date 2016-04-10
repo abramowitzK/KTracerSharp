@@ -12,6 +12,7 @@ namespace KTracerSharp {
 		public Vector3 Pos { get; set; }
 		public Quaternion Rot { get; set; }
 		public float Scale { get; set; }
+		public Material Mat { get; set; }
 
 		protected RenderObject(Vector3 pos, Quaternion rotation, float scale, Vector4 color) {
 			Pos = pos;
@@ -23,7 +24,6 @@ namespace KTracerSharp {
 		public virtual ObjectType GetObjectType() {
 			return ObjectType.None;
 		}
-
 		public abstract bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal);
 		public abstract void Rotate(float x, float y, float z);
 		public abstract void Translate(float x, float y, float z);

@@ -44,9 +44,9 @@ namespace KTracerSharp {
 					for (var j = 0; j < Width; j++) {
 						Color c = Color.FromArgb(
 							255,
-							(int) (m_data[i, j].X*255),
-							(int) (m_data[i, j].Y*255),
-							(int) (m_data[i, j].Z*255));
+							(int) (Math.Min(1.0f, m_data[i, j].X)*255),
+							(int) (Math.Min(1.0f, m_data[i, j].Y)*255),
+							(int) (Math.Min(1.0f, m_data[i, j].Z)*255));
 						b.SetPixel(i, j, c);
 					}
 				}
