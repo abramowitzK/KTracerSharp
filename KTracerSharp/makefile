@@ -7,7 +7,7 @@ run : build
 	@./ConvertToPng.sh
 	@rm out.ppm
 build :
-	@dmcs  -r:OpenTK.dll *.cs -out:Graphics.exe
+	@mcs  -r:OpenTK.dll *.cs -out:Graphics.exe
 clean : 
 	@rm Graphics.exe
 	@rm out.png
