@@ -3,7 +3,7 @@ using System.IO;
 using OpenTK;
 
 namespace KTracerSharp {
-	internal class SMFMeshLoader {
+	public class SMFMeshLoader {
 		private readonly Dictionary<string, TriangleMesh> m_resourceMap;
 
 		public SMFMeshLoader() {
@@ -51,7 +51,7 @@ namespace KTracerSharp {
 				normals[i] = normals[i].Normalized();
 			}
 			CalcVertexNormals(indices, faceNormals, normals);
-			m_resourceMap[filename] = new TriangleMesh(vertices, indices);
+			m_resourceMap[filename] = new TriangleMesh(vertices, indices, normals);
 		}
 
 		public TriangleMesh GetMesh(string filename) {
@@ -67,9 +67,9 @@ namespace KTracerSharp {
 		}
 
 		private void CalcVertexNormals(List<int> indices, List<Vector3> faceNormals, List<Vector3> normals) {
-			for (int i = 0; i < indices.Count; i++) {
-				int f = i / 3;
-				int v = indices[i];
+			for (var i = 0; i < indices.Count; i++) {
+				var f = i / 3;
+				var v = indices[i];
 				normals[v] += faceNormals[f];
 				normals[v].Normalize();
 			}
@@ -79,7 +79,7 @@ namespace KTracerSharp {
 			//Split line on space delimiter
 			var split = line.Split(' ');
 			var ret = new Vector3(1.0f);
-			for (int i = 1; i < 4; i++) {
+			for (var i = 1; i < 4; i++) {
 				ret[i - 1] = float.Parse(split[i]);
 			}
 			vertices.Add(ret);
@@ -87,7 +87,7 @@ namespace KTracerSharp {
 
 		private void ParseFace(List<int> indices, string line) {
 			var split = line.Split(' ');
-			for (int i = 1; i < 4; i++) {
+			for (var i = 1; i < 4; i++) {
 				indices.Add(int.Parse(split[i]) - 1);
 			}
 		}

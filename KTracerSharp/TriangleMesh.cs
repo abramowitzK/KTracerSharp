@@ -6,8 +6,8 @@ using OpenTK;
 namespace KTracerSharp {
 	public class TriangleMesh : RenderObject {
 		private readonly List<int> m_indices;
-
 		private readonly List<Vector3> m_vertices;
+		private readonly List<Vector3> m_normals; 
 
 		public TriangleMesh(Vector3 pos, Quaternion rotation, float scale, Vector4 color, List<Vector3> vertices,
 			List<int> indices) : base(pos, rotation, scale, color) {
@@ -15,10 +15,11 @@ namespace KTracerSharp {
 			m_indices = indices;
 		}
 
-		public TriangleMesh(List<Vector3> vertices, List<int> indices)
+		public TriangleMesh(List<Vector3> vertices, List<int> indices, List<Vector3> normals )
 			: base(Vector3.Zero, Quaternion.Identity, 1.0f, new Vector4(0, 0, 1.0f, 1.0f)) {
 			m_vertices = vertices;
 			m_indices = indices;
+			m_normals = normals;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {

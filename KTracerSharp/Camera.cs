@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenTK;
 
 namespace KTracerSharp {
-	class Camera {
+	public class Camera {
 		public Camera(Vector3 pos, Vector3 up, Vector3 forward, float viewAngle, float distanceToPlane) {
 			ViewAngle = ConvertToRadians(viewAngle);
 			DistanceToPlane = distanceToPlane;

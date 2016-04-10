@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using OpenTK;
 
 namespace KTracerSharp {
@@ -11,7 +12,7 @@ namespace KTracerSharp {
 
 		public float Radius { get; set; }
 		private float RadiusSquared { get; set;}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {
 			var xo = ray.Start.X;
 			var yo = ray.Start.Y;
