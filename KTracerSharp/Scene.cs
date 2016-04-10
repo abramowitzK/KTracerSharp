@@ -8,7 +8,6 @@ using OpenTK;
 namespace KTracerSharp {
 	public class Scene {
 		private Camera Cam { get; set; }
-		private object m_lock = new object();
 		public Scene() {
 			Cam = new Camera(new Vector3(0.0f, 0.0f, -10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f), 45.0f, 10.0f);
 			Objects = new List<RenderObject>();
