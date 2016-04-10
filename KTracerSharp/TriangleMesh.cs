@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using OpenTK;
 
 namespace KTracerSharp {
@@ -19,7 +20,7 @@ namespace KTracerSharp {
 			m_vertices = vertices;
 			m_indices = indices;
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override bool Intersect(Ray ray, ref float tMin, out Vector3 intPoint, out Vector3 normal) {
 			var tmin = 1000000f;
 			Vector3 intPoint2 = Vector3.Zero;
@@ -60,7 +61,7 @@ namespace KTracerSharp {
 		public override ObjectType GetObjectType() {
 			return ObjectType.TriangleMesh;
 		}
-
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool RayIntersectsTriangle(Ray ray, Vector3 v1, Vector3 v2, Vector3 v3, out float t, out Vector3 intPoint,
 			out Vector3 normal) {
 			//Moller-Trumbore algorithm

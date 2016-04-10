@@ -21,7 +21,7 @@ namespace KTracerSharp {
 			mesh.Translate(0, -1.5f, 0);
 			mesh2.Translate(0, 0.75f, 0);
 			scene.AddObject(mesh);
-			scene.AddObject(mesh2);
+			//scene.AddObject(mesh2);
 			Stopwatch watch = new Stopwatch();
 			watch.Start();
 			var i = scene.Render();
