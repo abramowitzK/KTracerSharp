@@ -2,8 +2,8 @@
 using System.Diagnostics;
 using OpenTK;
 namespace KTracerSharp {
-	class Program {
-		static void Main(string[] args) {
+	public class Program {
+		public static void Main(string[] args) {
 			var loader = new SMFMeshLoader();
 			loader.LoadFile("bound-bunny_1k.smf");
 			loader.LoadFile("teapot.smf");
@@ -18,7 +18,7 @@ namespace KTracerSharp {
 			mesh2.Translate(0, 0.75f, 0);
 			scene.AddObject(mesh);
 			scene.AddObject(mesh2);
-			Stopwatch watch = new Stopwatch();
+			var watch = new Stopwatch();
 			watch.Start();
 			var i = scene.Render();
 			watch.Stop();
@@ -27,6 +27,7 @@ namespace KTracerSharp {
 			i.WriteToPPM("out.ppm");
 #else
 			i.WriteToPNG("out.png");
+#endif
 		}
 	}
 }
