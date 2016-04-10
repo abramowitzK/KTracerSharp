@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿using System;
+using System.Linq;
+using OpenTK;
 
 namespace KTracerSharp {
 	public class Ray {
@@ -12,6 +14,8 @@ namespace KTracerSharp {
 		public Vector3 Start { get; set; }
 
 		public Vector4 Trace(Scene s, int d) {
+			if(d == 0)
+				return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 			var tmin = float.MaxValue;
 			var closestTmin = float.MaxValue;
 			var inter = Vector3.Zero; //not using these yet.
@@ -26,7 +30,29 @@ namespace KTracerSharp {
 				}
 			}
 			if (closestObj != null) {
-				return new Vector4(closestObj.Color);
+				var col = Vector4.Zero;
+				//these only work for spheres
+				var pHit = Start + Dir*closestTmin;
+				var nHit = pHit - closestObj.Pos;
+				foreach (var l in s.Lights) {
+
+					var dir = l.Pos - pHit ;
+					dir.Normalize();
+					var lightRay = new Ray(dir, Vector3.Add(pHit, nHit*0.1f));
+					bool blocked = false;
+					foreach(var o in s.Objects) {
+						blocked = o.Intersect(lightRay, ref tmin, ref inter, ref norm);
+					}
+					if (!blocked) {
+						var lightDir = l.Pos - lightRay.Start;
+						float lD = l.Intensity*Math.Max(0, Vector3.Dot(nHit, lightDir));
+						col = Vector4.Add(col, new Vector4(closestObj.Color*lD));
+					}
+					else {
+						col = Vector4.Add(col, (new Vector4(0.0f, 0.0f, 0.0f, 1.0f)));
+					}
+				}
+				return col + s.AmbientColor;
 			}
 			return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 		}

@@ -6,14 +6,16 @@ using OpenTK;
 namespace KTracerSharp {
 	public class Scene {
 		public Scene() {
-			Cam = new Camera(new Vector3(0.0f, 0.0f, -10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 1.0f), 45.0f,
+			Cam = new Camera(new Vector3(0.0f, 0.0f, 10.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, -1.0f), 45.0f,
 				10.0f);
 			Objects = new List<RenderObject>();
+			Lights = new List<Light>();
 		}
 
 		private Camera Cam { get; }
-
-		public IList<RenderObject> Objects { get; }
+		public Vector4 AmbientColor { get; set; }
+		public IList<RenderObject> Objects { get;}
+		public IList<Light> Lights { get; }
 
 		public Image Render() {
 			const int height = 1024;
@@ -33,7 +35,7 @@ namespace KTracerSharp {
 		public void RenderTask(ref Image im, Ray[,] rays, int start, int end, int height) {
 			for (var i = start; i < end; i++) {
 				for (var j = 0; j < height; j++) {
-					im.Set(i, j, rays[i, j].Trace(this, 1));
+					im.Set(i, j, rays[i, j].Trace(this, 2));
 				}
 #if !__MonoCS__
 				Task.Delay(0);
@@ -43,6 +45,10 @@ namespace KTracerSharp {
 
 		public void AddObject(RenderObject obj) {
 			Objects.Add(obj);
+		}
+
+		public void AddLight(Light l) {
+			Lights.Add(l);
 		}
 	}
 }

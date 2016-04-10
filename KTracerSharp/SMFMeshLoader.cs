@@ -43,8 +43,8 @@ namespace KTracerSharp {
 				faceNormals.Add(n);
 			}
 			for (var i = 0; i < indices.Count; i++) {
-				int f = i/3;
-				int v = indices[i];
+				var f = i/3;
+				var v = indices[i];
 				normals[v] += faceNormals[f];
 			}
 			for (var i = 0; i < normals.Count; i++) {
