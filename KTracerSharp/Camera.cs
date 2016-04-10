@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using OpenTK;
 
 namespace KTracerSharp {
@@ -21,14 +17,14 @@ namespace KTracerSharp {
 		}
 
 		public Ray[,] GenerateRays(int hRes, int vRes) {
-			Ray[,] rays = new Ray[hRes,vRes];
-			Vector3 y = Up;
-			var s_j = DistanceToPlane * 2.0f * (float)Math.Tan(  ViewAngle / 2.0f);
-			float s_k = s_j * (vRes / (float)hRes);
-			Vector3 posOfPixel = Position + (DistanceToPlane * Forward) - (((float)(s_j / 2.0)) * Right) + (((float)(s_k / 2.0)) * y);
-			for (int i = 0; i < hRes; i++) {
-				for (int j = 0; j < vRes; j++) {
-					Vector3 dir = (posOfPixel + s_j * (i / (float)(hRes - 1)) * Right - s_k * (j / (float)(vRes - 1)) * y) - Position;
+			var rays = new Ray[hRes,vRes];
+			var y = Up;
+			var sJ = DistanceToPlane * 2.0f * (float)Math.Tan(  ViewAngle / 2.0f);
+			var sK = sJ * (vRes / (float)hRes);
+			var posOfPixel = Position + DistanceToPlane * Forward - (float)(sJ / 2.0) * Right + (float)(sK / 2.0) * y;
+			for (var i = 0; i < hRes; i++) {
+				for (var j = 0; j < vRes; j++) {
+					var dir = (posOfPixel + sJ * (i / (float)(hRes - 1)) * Right - sK * (j / (float)(vRes - 1)) * y) - Position;
 					dir = dir.Normalized();
 					rays[i,j] = new Ray(new Vector3(dir), Position);
 				}

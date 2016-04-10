@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 #endif
 using OpenTK;
-using OpenTK.Graphics;
 
 namespace KTracerSharp {
 	public class Image {
@@ -28,7 +27,7 @@ namespace KTracerSharp {
 			text.Write(Height);
 			text.Write(" "+"255" + " ");
 			text.Close();
-			BinaryWriter ofs = new BinaryWriter(new FileStream(FileName, FileMode.Append));
+			var ofs = new BinaryWriter(new FileStream(FileName, FileMode.Append));
 			for (int i = 0; i < Height; i++) {
 				for (int j = 0; j < Width; j++) {
 					ofs.Write((byte)(Math.Min(1.0f, m_data[j,i].X)*255));
