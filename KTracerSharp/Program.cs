@@ -11,9 +11,9 @@ namespace KTracerSharp {
 			var mesh2 = loader.GetMesh("teapot.smf");
 			var scene = new Scene();
 			var s = new Sphere(new Vector3(-5.0f, 0.0f, 0.0f), Quaternion.Identity, 1.0f, new Vector4(0.9f, 0.1f, 0.1f, 1.0f), 0.25f);
-			var s2 = new Sphere(new Vector3(5.0f, 0.0f, 0.0f), Quaternion.Identity, 1f, new Vector4(0.1f, 0.5f, 0.1f, 1.0f), 3f);
-			scene.AddLight(new Light(new Vector3(-10f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 0.3f));
-			//scene.AddLight(new Light(new Vector3(5, 0f, 0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.2f));
+			var s2 = new Sphere(new Vector3(5.0f, 0.0f, 0.0f), Quaternion.Identity, 1f, new Vector4(0.1f, 0.4f, 0.1f, 1.0f), 3f);
+			scene.AddLight(new Light(new Vector3(-3f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 1.0f));
+			scene.AddLight(new Light(new Vector3(0, 0f, 3f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.5f));
 			scene.AddObject(s);
 			scene.AddObject(s2);
 			scene.AmbientColor = new Vector4(0.07f,0.07f,0.07f,1.0f);

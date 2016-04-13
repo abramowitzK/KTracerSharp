@@ -47,6 +47,7 @@ namespace KTracerSharp {
 				var col = Vector4.Zero;
 				var pHit = closestHitInfo.Intersect;
 				var nHit = closestHitInfo.Normal;
+				nHit.Normalize();
 				foreach (var l in s.Lights) {
 					var dir = l.Pos - (pHit+nHit*0.02f);
 					dir.Normalize();
@@ -55,15 +56,24 @@ namespace KTracerSharp {
 					float t = float.MaxValue;
 					foreach (var o in s.Objects) {
 						blocked = o.Intersect(lightRay, ref t, ref inter, ref norm);
-						if (blocked)
-							break;
+						if (blocked) {
+							//Need to also handle this case : (object1) (Light)  (object2). Should not block light one object 2 unless obj1 is in between light and object2;
+							var light = l.Pos - lightRay.Start;
+							var intRay = inter - pHit;
+							if (light.Length > intRay.Length) {
+								//Object is between light and hit point
+								break;
+							}
+							blocked = false;
+						}
 					}
 					if (!blocked) {
 						var lightDir = l.Pos - lightRay.Start;
+						var attenuation = 1.0f/lightDir.LengthSquared;
 						var v = Start - pHit;
 						var h = (lightDir + v).Normalized();
-						var lD = l.Intensity*Math.Max(0, Vector3.Dot(nHit, lightDir));
-						var spec = (float) (l.Intensity/2.0*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), 50.0)));
+						var lD = l.Intensity*attenuation*Math.Max(0, Vector3.Dot(nHit, lightDir));
+						var spec = (float) (l.Intensity*attenuation*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), 1.0)));
 						col  += new Vector4(closestObj.Color*lD);
 						col += spec*new Vector4(1f, 1f, 1f, 1f);
 					}
