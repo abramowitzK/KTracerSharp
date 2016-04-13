@@ -49,17 +49,21 @@ namespace KTracerSharp {
 			var start = ray.Start;
 			var dir = ray.Dir;
 			for (var i = 0; i < m_indices.Count; i+=3) {
-				var v1 = m_vertices[i];
-				var v2 = m_vertices[i+1];
-				var v3 = m_vertices[i + 2];
-				float t = 0;
-				if (RayIntersectsTriangle(ref start, ref dir, v1,  v2,  v3, ref t, ref intPoint, ref normal)) {
+				var v1 = m_vertices[m_indices[i]];
+				var v2 = m_vertices[m_indices[i+1]];
+				var v3 = m_vertices[m_indices[i + 2]];
+				float t = float.MaxValue;
+				Vector3 intp = Vector3.Zero;
+				Vector3 norm = Vector3.Zero;
+				if (RayIntersectsTriangle(ref start, ref dir, v1,  v2,  v3, ref t, ref intp, ref norm)) {
 					if (t < tMin) {
 						tMin = t;
+						intPoint = intp;
+						normal = norm;
 					}
 				}
 			}
-			return tMin < 1000000.0f;
+			return tMin< 1000000.0f && tMin > 0;
 		}
 
 		public override void Rotate(float x, float y, float z) {
@@ -103,11 +107,12 @@ namespace KTracerSharp {
 			if (v < 0.0 || u + v > 1.0) {
 				return false;
 			}
-			t = Vector3.Dot(e2, h)*a;
-			if (t > 0) {
-				intPoint = p + d * t;
-				//normal = (1 - u - v) * v1.Normal + u*v2.Normal + v*v3.Normal;
-				normal = v1.Normal;
+			var temp = Vector3.Dot(e2, h)*a;
+			if (temp > 0 && temp < t) {
+				t = temp;
+				intPoint = p + (d * t);
+				normal = (1 - u - v) * v1.Normal + u*v2.Normal + v*v3.Normal;
+				//normal = Vector3.Cross(e1, e2);
 				normal.Normalize();
 				return true;
 			}

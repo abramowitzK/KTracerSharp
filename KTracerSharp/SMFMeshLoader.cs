@@ -33,28 +33,28 @@ namespace KTracerSharp {
 						throw new IOException("Not a face or vertex!");
 				}
 			}
-			var normals = new List<Vector3>(new Vector3[indices.Count]);
+			var normals = new List<Vector3>(new Vector3[vertices.Count]);
 			for (var i = 0; i < indices.Count; i += 3) {
 				var p1 = vertices[indices[i]];
 				var p2 = vertices[indices[i + 1]];
 				var p3 = vertices[indices[i + 2]];
 				var u = p2 - p1;
 				var v = p3 - p1;
-				var n = Vector3.Cross(u, v).Normalized();
-				faceNormals.Add(n);
+				var n = Vector3.Cross(u, v);
+				faceNormals.Add(new Vector3(n));
 			}
 			for (var i = 0; i < indices.Count; i++) {
 				var f = i/3;
 				var v = indices[i];
-				normals[v] = faceNormals[f];
+				normals[v] += faceNormals[f];
 			}
 			for (var i = 0; i < normals.Count; i++) {
 				normals[i] = normals[i].Normalized();
 			}
-			List<Vertex> verts = new List<Vertex>(new Vertex[indices.Count]);
+			List<Vertex> verts = new List<Vertex>(new Vertex[vertices.Count]);
 
-			for (var i = 0; i < indices.Count; i++) {
-				verts[i] = new Vertex(new Vector3( vertices[indices[i]]), new Vector3( normals[indices[i]]));
+			for (var i = 0; i < verts.Count; i++) {
+				verts[i] = new Vertex(new Vector3( vertices[i]), new Vector3( normals[i]));
 			}
 			//CalcVertexNormals(indices, faceNormals, normals);
 			m_resourceMap[filename] = new TriangleMesh(verts, indices);
@@ -88,7 +88,7 @@ namespace KTracerSharp {
 			for (var i = 1; i < 4; i++) {
 				ret[i - 1] = float.Parse(split[i]);
 			}
-			vertices.Add(ret);
+			vertices.Add(new Vector3(ret));
 		}
 
 		private void ParseFace(List<int> indices, string line) {

@@ -5,21 +5,21 @@ namespace KTracerSharp {
 	public class Program {
 		public static void Main(string[] args) {
 			var loader = new SMFMeshLoader();
-			loader.LoadFile("box.smf");
+			loader.LoadFile("bound-bunny_1k.smf");
 			loader.LoadFile("teapot.smf");
-			var mesh = loader.GetMesh("box.smf");
+			var mesh = loader.GetMesh("bound-bunny_1k.smf");
 			var mesh2 = loader.GetMesh("teapot.smf");
 			var scene = new Scene();
 			var s = new Sphere(new Vector3(-5.0f, 0.0f, 0.0f), Quaternion.Identity, 1.0f, new Vector4(0.9f, 0.1f, 0.1f, 1.0f), 0.25f);
-			var s2 = new Sphere(new Vector3(3.0f, 0.0f, 0.0f), Quaternion.Identity, 1f, new Vector4(0.1f, 0.5f, 0.1f, 1.0f), 1f);
-			scene.AddLight(new Light(new Vector3(-10f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 0.2f));
-			scene.AddLight(new Light(new Vector3(-3, 0f, 10f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.1f));
+			var s2 = new Sphere(new Vector3(5.0f, 0.0f, 0.0f), Quaternion.Identity, 1f, new Vector4(0.1f, 0.5f, 0.1f, 1.0f), 3f);
+			scene.AddLight(new Light(new Vector3(-10f, 0f, 0f), new Vector4(1.0f,1.0f,1.0f,1.0f), 0.3f));
+			//scene.AddLight(new Light(new Vector3(5, 0f, 0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.2f));
 			scene.AddObject(s);
 			scene.AddObject(s2);
 			scene.AmbientColor = new Vector4(0.07f,0.07f,0.07f,1.0f);
 			//mesh.Translate(0, 0f, 0);
 			//mesh2.Translate(0, 0.75f, 0);
-			//scene.AddObject(mesh);
+			scene.AddObject(mesh);
 			//scene.AddObject(mesh2);
 			var watch = new Stopwatch();
 			watch.Start();

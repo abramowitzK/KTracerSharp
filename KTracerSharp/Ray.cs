@@ -27,10 +27,8 @@ namespace KTracerSharp {
 		public Vector3 Start { get; set; }
 
 		public Vector4 Trace(Scene s, int d) {
-			if (d == 0)
-				return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 			var tmin = float.MaxValue;
-			var closestTmin = float.MaxValue;
+			var closestTmin = 1e6f;
 			var inter = Vector3.Zero; //not using these yet.
 			var norm = Vector3.Zero;
 			RenderObject closestObj = null;
@@ -50,9 +48,9 @@ namespace KTracerSharp {
 				var pHit = closestHitInfo.Intersect;
 				var nHit = closestHitInfo.Normal;
 				foreach (var l in s.Lights) {
-					var dir = l.Pos - (pHit+nHit*0.1f);
+					var dir = l.Pos - (pHit+nHit*0.02f);
 					dir.Normalize();
-					var lightRay = new Ray(dir, Vector3.Add(pHit, nHit*0.1f));
+					var lightRay = new Ray(dir, Vector3.Add(pHit, nHit*0.02f));
 					var blocked = false;
 					float t = float.MaxValue;
 					foreach (var o in s.Objects) {
@@ -62,9 +60,10 @@ namespace KTracerSharp {
 					}
 					if (!blocked) {
 						var lightDir = l.Pos - lightRay.Start;
-						var h = (lightDir + (this.Start - pHit)).Normalized();
+						var v = Start - pHit;
+						var h = (lightDir + v).Normalized();
 						var lD = l.Intensity*Math.Max(0, Vector3.Dot(nHit, lightDir));
-						var spec = (float) (l.Intensity*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), 5.0)));
+						var spec = (float) (l.Intensity/2.0*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), 50.0)));
 						col  += new Vector4(closestObj.Color*lD);
 						col += spec*new Vector4(1f, 1f, 1f, 1f);
 					}

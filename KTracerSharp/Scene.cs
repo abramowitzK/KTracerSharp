@@ -20,7 +20,8 @@ namespace KTracerSharp {
 		public Image Render() {
 			const int height = 1024;
 			const int width = 1024;
-			int numThreads = 1;//Environment.ProcessorCount;
+			//Must divide evenly into resolution currently
+			int numThreads = Environment.ProcessorCount;
 			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
