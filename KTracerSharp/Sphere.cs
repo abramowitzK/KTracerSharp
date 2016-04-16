@@ -43,7 +43,6 @@ namespace KTracerSharp {
 			tMin = t1 > epsilon ? Math.Min(t1, t0) : t0;
 			intPoint = ray.Start + tMin*ray.Dir;
 			normal = intPoint - Pos;
-
 			return true;
 		}
 
