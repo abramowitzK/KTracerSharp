@@ -37,5 +37,6 @@ namespace KTracerSharp {
 		public abstract bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal);
 		public abstract void Rotate(float x, float y, float z);
 		public abstract void Translate(float x, float y, float z);
+		public abstract void UniformScale(float s);
 	}
 }

@@ -68,15 +68,22 @@ namespace KTracerSharp {
 
 		public override void Rotate(float x, float y, float z) {
 			var m = new Quaternion(x,y,z);
-			for (var i = 0; i < m_points.Count; i++) {
-				m_points[i] = Vector3.Transform(m_points[i], m);
+			for (var i = 0; i < m_vertices.Count; i++) {
+				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
 			}
 		}
 
 		public override void Translate(float x, float y, float z) {
 			var m = Matrix4.CreateTranslation(x, y, z);
-			for (var i = 0; i < m_points.Count; i++) {
-				m_points[i] = Vector3.TransformPosition(m_points[i], m);
+			for (var i = 0; i < m_vertices.Count; i++) {
+				m_vertices[i].Point = Vector3.TransformPosition(m_vertices[i].Point, m);
+			}
+		}
+
+		public override void UniformScale(float s) {
+			var m = Matrix4.CreateScale(s);
+			for (var i = 0; i < m_vertices.Count; i++) {
+				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
 			}
 		}
 

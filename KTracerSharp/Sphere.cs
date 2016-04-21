@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using OpenTK;
+using OpenTK.Audio;
 
 namespace KTracerSharp {
 	public class Sphere : RenderObject {
@@ -10,7 +11,14 @@ namespace KTracerSharp {
 			RadiusSquared = radius*radius;
 		}
 
-		public float Radius { get; set; }
+		private float m_radius;
+		public float Radius {
+			get { return m_radius; }
+			set {
+				m_radius = value;
+				RadiusSquared = Radius*Radius;
+			}
+		}
 		private float RadiusSquared { get; set;}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {
@@ -53,6 +61,10 @@ namespace KTracerSharp {
 
 		public override void Translate(float x, float y, float z) {
 			Pos += new Vector3(x, y, z);
+		}
+
+		public override void UniformScale(float s) {
+			Radius = Radius*s;
 		}
 
 		public override ObjectType GetObjectType() {
