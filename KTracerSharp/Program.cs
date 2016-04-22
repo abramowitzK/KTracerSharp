@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using OpenTK;
+//uncomment this for antialiasing
+//#define ANTIALIAS
 namespace KTracerSharp {
 	public class Program {
 		public static void Main(string[] args) {
@@ -36,10 +38,14 @@ namespace KTracerSharp {
 			var i = scene.Render();
 			watch.Stop();
 			Console.WriteLine(watch.ElapsedMilliseconds/1000.0);
+#if ANTIALIAS
+			i.AntialiasAndWriteToFile("out.png");
+#else
 #if __MonoCS__
 			i.WriteToPPM("out.ppm");
 #else
 			i.WriteToPNG("out.png");
+#endif
 #endif
 		}
 	}

@@ -6,7 +6,7 @@ using OpenTK;
 namespace KTracerSharp {
 	public class Scene {
 		public Scene() {
-			Cam = new Camera(new Vector3(.0f, 0.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0f, 0f, -1.0f), 45.0f,
+			Cam = new Camera(new Vector3(20.0f, 0.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(-1f, 0f, -1.0f), 45.0f,
 				10.0f);
 			Objects = new List<RenderObject>();
 			Lights = new List<Light>();

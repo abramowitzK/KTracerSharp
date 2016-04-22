@@ -16,7 +16,7 @@ namespace KTracerSharp {
 		}
 		/**
 		Need this for linux since I can't find a png library that works on linux...GOing to use imagemagick to convert
-		on running program
+		after running program
 		*/
 		public void WriteToPPM(string FileName) {
 			
@@ -54,6 +54,24 @@ namespace KTracerSharp {
 			}
 		}
 #endif
+
+		public void AntialiasAndWriteToFile(string FileName) {
+			var im = new Image(Width/2, Height/2);
+			for (int i = 0; i < Width-1; i+=2) {
+				for (int j = 0; j < Height-1; j+=2) {
+					var c = m_data[i, j] + m_data[i + 1, j] + m_data[i, j + 1] + m_data[i + 1, j + 1];
+					c /= 4.0f;
+					im.Set(i/2,j/2, c);
+					
+				}
+			}
+#if __MonoCS__
+			im.WriteToPPM("out.ppm");
+#else
+			im.WriteToPNG(FileName);
+#endif
+		}
+
 		public void Set(int i, int j, Vector4 data) {
 				m_data[i,j] = data;
 		}
