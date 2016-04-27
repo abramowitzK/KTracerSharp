@@ -18,7 +18,7 @@ namespace KTracerSharp {
 			get { return m_material; }
 			set {
 				if (value == null)
-					throw new ArgumentNullException(nameof(value));
+					throw new ArgumentNullException("value");
 				HasMaterial = value.MType != MaterialType.None;
 				m_material = value;
 			}

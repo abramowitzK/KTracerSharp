@@ -12,10 +12,10 @@ namespace KTracerSharp {
 			Lights = new List<Light>();
 		}
 
-		private Camera Cam { get; }
+		private Camera Cam { get; set; }
 		public Vector4 AmbientColor { get; set; }
-		public IList<RenderObject> Objects { get;}
-		public IList<Light> Lights { get; }
+		public IList<RenderObject> Objects { get; set;}
+		public IList<Light> Lights { get; set;}
 
 		public Image Render() {
 			const int height = 1024;
