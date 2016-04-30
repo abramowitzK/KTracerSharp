@@ -1,9 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using OpenTK;
 
 namespace KTracerSharp {
+	public class Triangle {
+		public Vertex V1;
+		public Vertex V2;
+		public Vertex V3;
+
+		public Triangle(Vertex v1, Vertex v2, Vertex v3) {
+			V1 = v1;
+			V2 = v2;
+			V3 = v3;
+		}
+	}
+
 	public class Vertex {
 		public Vector3 Point;
 		public Vector3 Normal;
@@ -21,6 +34,7 @@ namespace KTracerSharp {
 		private readonly List<Vector3> m_points;
 		private readonly List<Vector3> m_normals;
 		private readonly List<Vertex> m_vertices;
+		private List<Triangle> m_triangles; 
 		public TriangleMesh(Vector3 pos, Quaternion rotation, float scale, Vector4 color, List<Vector3> points,
 			List<int> indices) : base(pos, rotation, scale, color) {
 			m_points = points;
@@ -42,6 +56,7 @@ namespace KTracerSharp {
 		public TriangleMesh(List<Vertex> verts, List<int> indices) : base(Vector3.Zero, Quaternion.Identity, 1.0f, new Vector4(0, 0, 1.0f, 1.0f)) {
 			m_vertices = verts;
 			m_indices = indices;
+			m_triangles = new List<Triangle>( new Triangle[m_indices.Count/3]);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -86,6 +101,42 @@ namespace KTracerSharp {
 				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
 			}
 		}
+		//This is not the most optimal sphere but calculating the optimal one is more difficult than I anticipated...
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override void CalculateBoundingSphere() {
+			float maxx, minx, maxy, miny, maxz, minz;
+			maxx = float.MinValue;
+			minx = float.MaxValue;
+			maxy = float.MinValue;
+			miny = float.MaxValue;
+			maxz = float.MinValue;
+			minz = float.MaxValue;
+			//Calculate the points on the bounding box;
+			foreach (var p in m_vertices) {
+				if (p.Point.X > maxx)
+					maxx = p.Point.X;
+				else if (p.Point.X < minx)
+					minx = p.Point.X;
+				if (p.Point.Y > maxy)
+					maxy = p.Point.Y;
+				else if (p.Point.Y < miny)
+					miny = p.Point.Y;
+				if (p.Point.Z > maxz)
+					maxz = p.Point.Z;
+				else if (p.Point.Z < minz)
+					minz = p.Point.Z;
+			}
+			var center = new Vector3((maxx + minx)/2.0f, (maxy+miny)/2.0f, (maxz - minz)/2.0f);
+			float radius = float.MinValue;
+			float temp;
+			foreach (var p in m_vertices) {
+				temp = (p.Point - center).LengthSquared;
+				if (temp > radius)
+					radius = temp;
+			}
+			radius = (float)Math.Sqrt(radius);
+			BoundingBox = new BoundingSphere(center, radius);
+		}
 
 		public override ObjectType GetObjectType() {
 			return ObjectType.TriangleMesh;
@@ -124,6 +175,13 @@ namespace KTracerSharp {
 				return true;
 			}
 			return false;
+		}
+
+		public void GenerateTriangles() {
+			for (int i = 0; i < m_indices.Count; i+=3) {
+				int f = i/3;
+				m_triangles[f] = new Triangle(m_vertices[m_indices[i]], m_vertices[m_indices[i+1]], m_vertices[m_indices[i+2]]);
+			}
 		}
 	}
 }

@@ -18,10 +18,10 @@ namespace KTracerSharp {
 		public IList<Light> Lights { get; set;}
 
 		public Image Render() {
-			const int height = 1024;
-			const int width = 1024;
+			const int height = 512;
+			const int width = 512;
 			//Must divide evenly into resolution currently
-			int numThreads = Environment.ProcessorCount;
+			var numThreads = Environment.ProcessorCount;
 			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];

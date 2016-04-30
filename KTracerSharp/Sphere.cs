@@ -67,6 +67,11 @@ namespace KTracerSharp {
 			Radius = Radius*s;
 		}
 
+		public override void CalculateBoundingSphere() {
+			BoundingBox = new BoundingSphere(Pos, Radius);
+		}
+
+
 		public override ObjectType GetObjectType() {
 			return ObjectType.Sphere;
 		}

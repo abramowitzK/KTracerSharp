@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using OpenTK;
 
 namespace KTracerSharp {
@@ -35,11 +36,13 @@ namespace KTracerSharp {
 				HitInfo closestHitInfo = null;
 
 				for (var i = 0; i < s.Objects.Count; i++) {
-					if (s.Objects[i].Intersect(this, ref tmin, ref inter, ref norm)) {
-						if (tmin < closestTmin) {
-							closestObj = s.Objects[i];
-							closestTmin = tmin;
-							closestHitInfo = new HitInfo(new Vector3(norm), new Vector3(inter), tmin);
+					if (s.Objects[i].BoundingBox.Intersect(this)) {
+						if (s.Objects[i].Intersect(this, ref tmin, ref inter, ref norm)) {
+							if (tmin < closestTmin) {
+								closestObj = s.Objects[i];
+								closestTmin = tmin;
+								closestHitInfo = new HitInfo(new Vector3(norm), new Vector3(inter), tmin);
+							}
 						}
 					}
 				}

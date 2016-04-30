@@ -69,10 +69,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoundingSphere.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Light.cs" />
     <Compile Include="Material.cs" />
+    <Compile Include="Octree.cs" />
     <Compile Include="Ray.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

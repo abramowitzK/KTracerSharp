@@ -12,6 +12,7 @@ namespace KTracerSharp {
 		public Vector4 Color { get; set; }
 		public Vector3 Pos { get; set; }
 		public Quaternion Rot { get; set; }
+		public BoundingSphere BoundingBox { get; set; }
 		public float Scale { get; set; }
 		private Material m_material;
 		public Material Mat {
@@ -38,5 +39,6 @@ namespace KTracerSharp {
 		public abstract void Rotate(float x, float y, float z);
 		public abstract void Translate(float x, float y, float z);
 		public abstract void UniformScale(float s);
+		public abstract void CalculateBoundingSphere();
 	}
 }
