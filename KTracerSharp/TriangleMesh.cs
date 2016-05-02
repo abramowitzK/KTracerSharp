@@ -34,7 +34,12 @@ namespace KTracerSharp {
 		private readonly List<Vector3> m_points;
 		private readonly List<Vector3> m_normals;
 		private readonly List<Vertex> m_vertices;
-		private List<Triangle> m_triangles; 
+		private List<Triangle> m_triangles;
+
+		public List<Triangle> GetTriangles() {
+			return m_triangles;
+		}
+
 		public TriangleMesh(Vector3 pos, Quaternion rotation, float scale, Vector4 color, List<Vector3> points,
 			List<int> indices) : base(pos, rotation, scale, color) {
 			m_points = points;
@@ -104,13 +109,12 @@ namespace KTracerSharp {
 		//This is not the most optimal sphere but calculating the optimal one is more difficult than I anticipated...
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public override void CalculateBoundingSphere() {
-			float maxx, minx, maxy, miny, maxz, minz;
-			maxx = float.MinValue;
-			minx = float.MaxValue;
-			maxy = float.MinValue;
-			miny = float.MaxValue;
-			maxz = float.MinValue;
-			minz = float.MaxValue;
+			var maxx = float.MinValue;
+			var minx = float.MaxValue;
+			var maxy = float.MinValue;
+			var miny = float.MaxValue;
+			var maxz = float.MinValue;
+			var minz = float.MaxValue;
 			//Calculate the points on the bounding box;
 			foreach (var p in m_vertices) {
 				if (p.Point.X > maxx)
@@ -126,11 +130,10 @@ namespace KTracerSharp {
 				else if (p.Point.Z < minz)
 					minz = p.Point.Z;
 			}
-			var center = new Vector3((maxx + minx)/2.0f, (maxy+miny)/2.0f, (maxz - minz)/2.0f);
-			float radius = float.MinValue;
-			float temp;
+			var center = new Vector3((maxx + minx)/2.0f, (maxy+miny)/2.0f, (maxz + minz)/2.0f);
+			var radius = float.MinValue;
 			foreach (var p in m_vertices) {
-				temp = (p.Point - center).LengthSquared;
+				var temp = (p.Point - center).LengthSquared;
 				if (temp > radius)
 					radius = temp;
 			}

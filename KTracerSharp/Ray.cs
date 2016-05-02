@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace KTracerSharp {
 	internal class HitInfo {
@@ -26,6 +27,16 @@ namespace KTracerSharp {
 
 		public Vector3 Start { get; set; }
 
+		private bool IntersectBVH(BoundingSphere parent, ref float tmin, ref Vector3 inter, ref Vector3 norm) {
+
+			if (parent.Intersect(this)) {
+
+
+			}
+			return false;
+
+		}
+
 		public Vector4 Trace(Scene s, int d) {
 			try {
 				var tmin = float.MaxValue;
@@ -34,9 +45,10 @@ namespace KTracerSharp {
 				var norm = Vector3.Zero;
 				RenderObject closestObj = null;
 				HitInfo closestHitInfo = null;
-
+				if(!s.Root.Intersect(this))
+					return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 				for (var i = 0; i < s.Objects.Count; i++) {
-					if (s.Objects[i].BoundingBox.Intersect(this)) {
+					if (s.Root.Intersect(this)) {
 						if (s.Objects[i].Intersect(this, ref tmin, ref inter, ref norm)) {
 							if (tmin < closestTmin) {
 								closestObj = s.Objects[i];
