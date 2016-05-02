@@ -14,15 +14,24 @@ namespace KTracerSharp {
 
 	public class Material {
 		public float Shinyness { get; set; }
+		public float KD { get; set; }
+		public float KA { get; set; }
+		public float KS { get; set; }
+		public Vector4 AmbientColor { get; set; }
 		public Vector4 DiffuseColor { get; set; }
 		public Vector4 SpecularColor { get; set; }
 		public MaterialType MType { get; set; }
 
-		public Material(float shinyness, Vector4 dColor, Vector4 sColor) {
+		public Material(float shinyness, Vector4 dColor, Vector4 sColor, Vector4 ambient, float ka, float kd, float ks) {
 			Shinyness = shinyness;
+			AmbientColor = ambient;
 			DiffuseColor = dColor;
 			SpecularColor = sColor;
-			MType = MaterialType.None;
+			MType = MaterialType.Phong;
+			KA = ka;
+			KD = kd;
+			KS = ks;
+
 		}
 	}
 }
