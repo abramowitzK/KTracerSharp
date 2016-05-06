@@ -25,7 +25,8 @@ namespace KTracerSharp {
 			foreach (var obj in Objects) {
 				obj.CalculateBoundingSphere();
 				var t = obj as TriangleMesh;
-				t?.GenerateTriangles();
+				if(t!= null)
+					t.GenerateTriangles();
 			}
 
 			Root = ConstructBVH(Objects.ToList(), false);
@@ -50,7 +51,9 @@ namespace KTracerSharp {
 				if (obj[0] is Sphere)
 					return obj[0].BoundingBox;
 				else {
-					return ConstructTriangleLevelBVH((obj[0] as TriangleMesh)?.GetTriangles(), !sortByX);
+					if(obj[0] is TriangleMesh)
+						return ConstructTriangleLevelBVH((obj[0] as TriangleMesh).GetTriangles(), !sortByX);
+					return obj[0].BoundingBox;
 				}
 			}
 			else {
