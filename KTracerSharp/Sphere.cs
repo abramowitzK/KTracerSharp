@@ -43,12 +43,18 @@ namespace KTracerSharp {
 				if (t1 < epsilon) {
 					return false;
 				}
+				if (t1 > tMin)
+					return false;
 				tMin = t1;
 				intPoint = ray.Start + tMin*ray.Dir;
 				normal = intPoint - Pos;
 				return true;
 			}
-			tMin = t1 > epsilon ? Math.Min(t1, t0) : t0;
+
+			descrim = t1 > epsilon ? Math.Min(t1, t0) : t0;
+			if (descrim > tMin)
+				return false;
+			tMin = descrim;
 			intPoint = ray.Start + tMin*ray.Dir;
 			normal = intPoint - Pos;
 			return true;
@@ -68,6 +74,7 @@ namespace KTracerSharp {
 
 		public override void CalculateBoundingSphere() {
 			BoundingBox = new BoundingSphere(Pos, Radius);
+			BoundingBox.Object = this;
 		}
 
 

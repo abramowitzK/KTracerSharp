@@ -12,6 +12,7 @@ namespace KTracerSharp {
 		public BoundingSphere LeftChild { get; set; }
 		public BoundingSphere RightChild { get; set; }
 		public List<RenderObject> Objects;
+		public RenderObject Object;
 		public List<Triangle> Triangles; 
 		public int NumObjects { get; set; }
 		public int NumTriangles { get; set; }
@@ -44,8 +45,7 @@ namespace KTracerSharp {
 			var center = new Vector3((maxx + minx) / 2.0f, (maxy + miny) / 2.0f, (maxz + minz) / 2.0f);
 			var radius = (new Vector3((maxx - minx)/2.0f, (maxy-miny)/2.0f,(maxz - minz)/2.0f) - center).LengthSquared;
 			radius = (float)Math.Sqrt(radius);
-			var b = new BoundingSphere(center, radius);
-			b.Objects = new List<RenderObject>(list);
+			var b = new BoundingSphere(center, radius) {Objects = new List<RenderObject>(list)};
 			return b;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,7 +59,7 @@ namespace KTracerSharp {
 			var minz = float.MaxValue;
 			//Calculate the points on the bounding box;
 			 var verts = new List<Vertex>(new Vertex[list.Count*3]);
-			for (int i = 0; i < list.Count*3; i += 3) {
+			for (var i = 0; i < list.Count*3; i += 3) {
 				var f = i/3;
 				verts[i] = list[f].V1;
 				verts[i + 1] = list[f].V2;
@@ -87,8 +87,7 @@ namespace KTracerSharp {
 					radius = temp;
 			}
 			radius = (float)Math.Sqrt(radius);
-			var b = new BoundingSphere(center, radius);
-			b.Triangles = new List<Triangle>(list);
+			var b = new BoundingSphere(center, radius) {Triangles = new List<Triangle>(list)};
 			return b;
 		}
 

@@ -30,7 +30,7 @@ namespace KTracerSharp {
 						ParseVertex(vertices, line);
 						break;
 					default:
-						throw new IOException("Not a face or vertex!");
+						break;
 				}
 			}
 			var normals = new List<Vector3>(new Vector3[vertices.Count]);
@@ -62,7 +62,7 @@ namespace KTracerSharp {
 
 		public TriangleMesh GetMesh(string filename) {
 			if(m_resourceMap.ContainsKey(filename))
-				return m_resourceMap[filename];
+				return new TriangleMesh(m_resourceMap[filename]);
 			else {
 				throw new KeyNotFoundException("File does not exist in map");
 			}

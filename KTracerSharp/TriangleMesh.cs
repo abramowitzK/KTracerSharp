@@ -9,11 +9,12 @@ namespace KTracerSharp {
 		public Vertex V1;
 		public Vertex V2;
 		public Vertex V3;
-
-		public Triangle(Vertex v1, Vertex v2, Vertex v3) {
+		public TriangleMesh Parent;
+		public Triangle(Vertex v1, Vertex v2, Vertex v3, TriangleMesh parent) {
 			V1 = v1;
 			V2 = v2;
 			V3 = v3;
+			Parent = parent;
 		}
 	}
 
@@ -36,8 +37,22 @@ namespace KTracerSharp {
 		private readonly List<Vertex> m_vertices;
 		private List<Triangle> m_triangles;
 
+		public List<int> GetIndices() {
+			return m_indices;
+		}
+
+		public List<Vertex> GetVertices() {
+			return m_vertices;
+		}
+
 		public List<Triangle> GetTriangles() {
 			return m_triangles;
+		}
+
+		public TriangleMesh(TriangleMesh mesh) : base(Vector3.Zero, Quaternion.Identity, 1.0f, new Vector4(0, 0, 1.0f, 1.0f)) {
+			m_vertices = new List<Vertex>(mesh.GetVertices());
+			m_indices = new List<int>(mesh.GetIndices());
+			m_triangles = new List<Triangle>(new Triangle[m_indices.Count / 3]);
 		}
 
 		public TriangleMesh(Vector3 pos, Quaternion rotation, float scale, Vector4 color, List<Vector3> points,
@@ -68,22 +83,16 @@ namespace KTracerSharp {
 		public override bool Intersect(Ray ray, ref float tMin, ref Vector3 intPoint, ref Vector3 normal) {
 			var start = ray.Start;
 			var dir = ray.Dir;
-			for (var i = 0; i < m_indices.Count; i+=3) {
+			bool hit = false;
+			for (var i = 0; i < m_indices.Count; i += 3) {
 				var v1 = m_vertices[m_indices[i]];
-				var v2 = m_vertices[m_indices[i+1]];
+				var v2 = m_vertices[m_indices[i + 1]];
 				var v3 = m_vertices[m_indices[i + 2]];
-				float t = float.MaxValue;
-				Vector3 intp = Vector3.Zero;
-				Vector3 norm = Vector3.Zero;
-				if (RayIntersectsTriangle(ref start, ref dir, v1,  v2,  v3, ref t, ref intp, ref norm)) {
-					if (t < tMin) {
-						tMin = t;
-						intPoint = intp;
-						normal = norm;
-					}
+				if (RayIntersectsTriangle(ref start, ref dir, v1, v2, v3, ref tMin, ref intPoint, ref normal)) {
+					hit = true;
 				}
 			}
-			return tMin< 1000000.0f && tMin > 0;
+			return hit;
 		}
 
 		public override void Rotate(float x, float y, float z) {
@@ -173,8 +182,6 @@ namespace KTracerSharp {
 				t = temp;
 				intPoint = p + (d * t);
 				normal = (1 - u - v) * v1.Normal + u*v2.Normal + v*v3.Normal;
-				//normal = Vector3.Cross(e1, e2);
-				normal.Normalize();
 				return true;
 			}
 			return false;
@@ -183,7 +190,7 @@ namespace KTracerSharp {
 		public void GenerateTriangles() {
 			for (int i = 0; i < m_indices.Count; i+=3) {
 				int f = i/3;
-				m_triangles[f] = new Triangle(m_vertices[m_indices[i]], m_vertices[m_indices[i+1]], m_vertices[m_indices[i+2]]);
+				m_triangles[f] = new Triangle(m_vertices[m_indices[i]], m_vertices[m_indices[i+1]], m_vertices[m_indices[i+2]], this);
 			}
 		}
 	}
