@@ -114,7 +114,6 @@ namespace KTracerSharp {
 				var inter = Vector3.Zero; //not using these yet.
 				var norm = Vector3.Zero;
 				RenderObject closestObj = null;
-				HitInfo closestHitInfo = null;
 				/*if (!s.Root.Intersect(this))
 					return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 				for (var i = 0; i < s.Objects.Count; i++) {
