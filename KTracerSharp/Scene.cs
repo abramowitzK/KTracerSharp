@@ -7,7 +7,7 @@ using OpenTK;
 
 namespace KTracerSharp {
 	public class Scene {
-		public const int MaxTris = 1000;
+		public static int MaxTris = 100;
 		public Scene() {
 			Cam = new Camera(new Vector3(20.0f, 0.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(-1f, 0f, -1.0f), 45.0f,
 				10.0f);
@@ -33,7 +33,7 @@ namespace KTracerSharp {
 			const int height = 2048;
 			const int width = 2048;
 			//Must divide evenly into resolution currently
-			var numThreads = 64;
+			var numThreads = 16;
 			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
