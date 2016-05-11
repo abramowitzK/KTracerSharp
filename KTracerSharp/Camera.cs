@@ -86,20 +86,24 @@ namespace KTracerSharp {
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private bool IsPixelOkay(ref Vector4 v1, ref Vector4 v2, ref Vector4 v3, ref Vector4 v4) {
-			Vector4 temp = Vector4.One;
-			if ((temp = v1 - v2) != null && Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
+			Vector4 temp;
+			temp = v1 - v2;
+            if (Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
 			    (Math.Abs(temp.Z) > Tolerance) || (Math.Abs(temp.W) > Tolerance)) {
 				return false;
-			} 
-			if ((temp = v1 - v4) != null && Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
+			}
+			temp = v1 - v4;
+            if (Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
 			           (Math.Abs(temp.Z) > Tolerance) || (Math.Abs(temp.W) > Tolerance)) {
 				return false;
-			} 
-			if ((temp = v3 - v2) != null && Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
+			}
+			temp = v3 - v2;
+            if (Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
 			         (Math.Abs(temp.Z) > Tolerance) || (Math.Abs(temp.W) > Tolerance)) {
 				return false;
-			} 
-			if ((temp = v3 - v4) != null && Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
+			}
+			temp = v3 - v4;
+            if (Math.Abs(temp.X) > Tolerance || (Math.Abs(temp.Y) > Tolerance) ||
 			           (Math.Abs(temp.Z) > Tolerance) || (Math.Abs(temp.W) > Tolerance)) {
 				return false;
 			}
