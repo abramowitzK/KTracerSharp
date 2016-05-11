@@ -5,9 +5,11 @@ run : build
 	@#@mono --aot -O=all ./Graphics.exe
 	@./Graphics.exe ${ARGS}
 	@./ConvertToPng.sh
-	@rm out.ppm
+	@rm -f out.ppm
+	@rm -f intensity.ppm
 build :
 	@mcs  -r:OpenTK.dll *.cs -out:Graphics.exe
 clean : 
-	@rm Graphics.exe
-	@rm out.png
+	@rm -f Graphics.exe
+	@rm -f out.png
+	@rm -f intensity.png
