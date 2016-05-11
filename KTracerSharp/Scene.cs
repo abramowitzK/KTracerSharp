@@ -32,9 +32,9 @@ namespace KTracerSharp {
 			Root = ConstructBVH(Objects.ToList(), false);
 			const int height = 2048;
 			const int width = 2048;
-			//Must divide evenly into resolution currently
-			var numThreads = 16;
 			var im = new Image(width, height);
+			//Must divide evenly into resolution currently
+			/*var numThreads = 16;
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
 			var index = height/numThreads;
@@ -42,7 +42,8 @@ namespace KTracerSharp {
 				var temp = i;
 				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*index, height));
 			}
-			Task.WaitAll(threads);
+			Task.WaitAll(threads);*/
+			Cam.GenerateRays(width, height, ref im, this);
 			return im;
 		}
 

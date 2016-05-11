@@ -76,6 +76,10 @@ namespace KTracerSharp {
 				m_data[i,j] = data;
 		}
 
+		public Vector4 Get(int i, int j) {
+			return m_data[i, j];
+		}
+
 		private Vector4[,] m_data;
 		public int Height { get; set; }
 		public int Width { get; set; }
