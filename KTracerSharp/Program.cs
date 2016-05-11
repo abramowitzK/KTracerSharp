@@ -8,12 +8,13 @@ using OpenTK;
 namespace KTracerSharp {
 	public class Program {
 		public static void Main(string[] args) {
+			if(args.Length > 0)
+				int.TryParse(args[0], out Scene.MaxTris);
 			var watch = new Stopwatch();
 			watch.Start();
 			var loader = new SMFMeshLoader();
 			loader.LoadFile("bound-bunny_1k.smf");
 			loader.LoadFile("icos.smf");
-			loader.LoadFile("teddy.smf");
 			loader.LoadFile("bound-cow.smf");
 			var mesh = loader.GetMesh("bound-bunny_1k.smf");
 			mesh.Mat = new Material(100f, new Vector4(0.7f, 0.0f, 0.7f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),

@@ -7,7 +7,7 @@ using OpenTK;
 
 namespace KTracerSharp {
 	public class Scene {
-		public const int MaxTris = 100;
+		public static int MaxTris = 100;
 		public Scene() {
 			Cam = new Camera(new Vector3(20.0f, 0.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(-1f, 0f, -1.0f), 45.0f,
 				10.0f);
@@ -25,14 +25,15 @@ namespace KTracerSharp {
 			foreach (var obj in Objects) {
 				obj.CalculateBoundingSphere();
 				var t = obj as TriangleMesh;
-				t?.GenerateTriangles();
+				if (t != null)
+					t.GenerateTriangles();
 			}
 
 			Root = ConstructBVH(Objects.ToList(), false);
 			const int height = 2048;
 			const int width = 2048;
 			//Must divide evenly into resolution currently
-			var numThreads = 64;
+			var numThreads = 16;
 			var im = new Image(width, height);
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
@@ -50,7 +51,9 @@ namespace KTracerSharp {
 				if (obj[0] is Sphere)
 					return obj[0].BoundingBox;
 				else {
-					return ConstructTriangleLevelBVH((obj[0] as TriangleMesh)?.GetTriangles(), !sortByX);
+					if(obj[0] is TriangleMesh)
+						return ConstructTriangleLevelBVH((obj[0] as TriangleMesh).GetTriangles(), !sortByX);
+					return obj[0].BoundingBox;
 				}
 			}
 			else {
