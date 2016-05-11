@@ -7,6 +7,7 @@ using OpenTK.Audio.OpenAL;
 namespace KTracerSharp {
 	public class Camera {
 		public static float Tolerance = 0.05f;
+		public Vector4 BaseColor;
 		public Camera(Vector3 pos, Vector3 up, Vector3 forward, float viewAngle, float distanceToPlane) {
 			ViewAngle = ConvertToRadians(viewAngle);
 			DistanceToPlane = distanceToPlane;
@@ -14,6 +15,7 @@ namespace KTracerSharp {
 			Up = up.Normalized();
 			Forward = forward.Normalized();
 			Right = Vector3.Cross(Up, Forward).Normalized();
+			BaseColor = new Vector4(0.05f, 0.05f, 0.05f, 1.0f);
 		}
 
 		public float ConvertToRadians(float angle) {
@@ -36,7 +38,7 @@ namespace KTracerSharp {
 			return rays;
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void GenerateRays(int hRes, int vRes, ref Image image, Scene s) {
+		public void GenerateRays(int hRes, int vRes, ref Image image, Scene s, ref Image intensityImage) {
 			var rays = new bool[hRes+1, vRes+1];
 			var tempColors = new Vector4[hRes+1, vRes+1];
 			var y = Up;
@@ -46,6 +48,7 @@ namespace KTracerSharp {
 			Vector3 dir, dir2, dir3, dir4;
 			for (var i = 0; i < hRes; i++) {
 				for (var j = 0; j < vRes; j++) {
+					int numrays = 0;
 					dir = (posOfPixel + sJ * (i / (float)(hRes - 1)) * Right - sK * (j / (float)(vRes - 1)) * y) - Position;
 					dir = dir.Normalized();
 					if (!rays[i, j]) {
@@ -71,10 +74,12 @@ namespace KTracerSharp {
 						rays[i + 1, j + 1] = true;
 					}
 					if (!IsPixelOkay(ref tempColors[i, j], ref tempColors[i + 1, j], ref tempColors[i + 1, j + 1], ref tempColors[i, j + 1])) {
-						image.Set(i,j, SubdividePixel(s, 2, ref tempColors[i, j], ref tempColors[i + 1, j], ref tempColors[i + 1, j + 1], ref tempColors[i, j + 1], ref dir, ref dir2, ref dir3, ref dir4));
+						image.Set(i,j, SubdividePixel(ref numrays, s, 2, ref tempColors[i, j], ref tempColors[i + 1, j], ref tempColors[i + 1, j + 1], ref tempColors[i, j + 1], ref dir, ref dir2, ref dir3, ref dir4));
+						intensityImage.Set(i, j, intensityImage.Get(i, j) + BaseColor*numrays);
 					}
 					else { //No tolerance issues. just avg the pixels
 						image.Set(i,j, AverageVector4(ref tempColors[i,j], ref tempColors[i+1, j], ref tempColors[i+1, j+1],ref tempColors[i, j+1]));
+						intensityImage.Set(i,j, intensityImage.Get(i,j) + BaseColor*4f);
 					}
 				}
 			}
@@ -107,10 +112,11 @@ namespace KTracerSharp {
 			return ((v1 + v2 + v3 + v4)/4.0f);
 		}
 
-		private Vector4 SubdividePixel(Scene s , int recursions, ref Vector4 v1, ref Vector4 v2, ref Vector4 v3, ref Vector4 v4, ref Vector3 dir1, ref Vector3 dir2, ref Vector3 dir3, ref Vector3 dir4) {
+		private Vector4 SubdividePixel(ref int numRays, Scene s , int recursions, ref Vector4 v1, ref Vector4 v2, ref Vector4 v3, ref Vector4 v4, ref Vector3 dir1, ref Vector3 dir2, ref Vector3 dir3, ref Vector3 dir4) {
 			if (recursions == 0) {
 				return AverageVector4(ref v1, ref v2, ref v3, ref v4);
 			}
+			numRays += 4;
 			var tmd = (dir1 + dir2)/2f;
 			var md = (dir1 + dir2 + dir3 + dir4)/4f;
 			var rmd = (dir2 + dir3)/2f;
@@ -126,25 +132,25 @@ namespace KTracerSharp {
 			if (IsPixelOkay(ref v1, ref TopMid, ref Mid, ref LeftMid)) {
 				pixel[0] = AverageVector4(ref v1, ref TopMid, ref Mid, ref LeftMid);
 			} else {
-				pixel[0] = SubdividePixel(s, recursions - 1, ref v1, ref TopMid, ref Mid, ref LeftMid, ref dir1, ref tmd, ref md, ref lmd);
+				pixel[0] = SubdividePixel(ref numRays, s, recursions - 1, ref v1, ref TopMid, ref Mid, ref LeftMid, ref dir1, ref tmd, ref md, ref lmd);
 			}
 			//Top Right
 			if (IsPixelOkay(ref TopMid, ref v2, ref RightMid, ref Mid)) {
 				pixel[1] = AverageVector4(ref TopMid, ref v2, ref RightMid, ref Mid);
 			} else {
-				pixel[1] = SubdividePixel(s, recursions - 1, ref TopMid, ref v2, ref RightMid, ref Mid, ref tmd, ref dir2, ref rmd, ref md);
+				pixel[1] = SubdividePixel(ref numRays,s, recursions - 1, ref TopMid, ref v2, ref RightMid, ref Mid, ref tmd, ref dir2, ref rmd, ref md);
 			}
 			//Bottom right
 			if (IsPixelOkay(ref Mid, ref RightMid, ref v3, ref BottomMid)) {
 				pixel[2] = AverageVector4(ref Mid, ref RightMid, ref v3, ref BottomMid);
 			} else {
-				pixel[2] = SubdividePixel(s, recursions - 1, ref Mid, ref RightMid, ref v3, ref BottomMid, ref md, ref rmd, ref dir3, ref bmd);
+				pixel[2] = SubdividePixel(ref numRays,s, recursions - 1, ref Mid, ref RightMid, ref v3, ref BottomMid, ref md, ref rmd, ref dir3, ref bmd);
 			}
 			//Bottom left
 			if (IsPixelOkay(ref LeftMid, ref Mid, ref BottomMid, ref v4)) {
 				pixel[3] = AverageVector4(ref LeftMid, ref Mid, ref BottomMid, ref v4);
 			} else {
-				pixel[3] = SubdividePixel(s, recursions - 1, ref LeftMid, ref Mid, ref BottomMid, ref v4, ref lmd, ref md, ref bmd, ref dir4);
+				pixel[3] = SubdividePixel(ref numRays, s, recursions - 1, ref LeftMid, ref Mid, ref BottomMid, ref v4, ref lmd, ref md, ref bmd, ref dir4);
 			}
 			return AverageVector4(ref pixel[0], ref pixel[1], ref pixel[2], ref pixel[3]);
 		}

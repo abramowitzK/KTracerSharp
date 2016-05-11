@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define INTENSITY
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -30,11 +31,12 @@ namespace KTracerSharp {
 			}
 
 			Root = ConstructBVH(Objects.ToList(), false);
-			const int height = 2048;
-			const int width = 2048;
+			const int height = 1024;
+			const int width = 1024;
 			var im = new Image(width, height);
-			//Must divide evenly into resolution currently
-			/*var numThreads = 16;
+			var intensity = new Image(width, height);
+			/*//Must divide evenly into resolution currently
+			var numThreads = 16;
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
 			var index = height/numThreads;
@@ -43,7 +45,12 @@ namespace KTracerSharp {
 				threads[i] = Task.Factory.StartNew(() => RenderTask(ref im, rays, temp*index, (temp + 1)*index, height));
 			}
 			Task.WaitAll(threads);*/
-			Cam.GenerateRays(width, height, ref im, this);
+			Cam.GenerateRays(width, height, ref im, this, ref intensity);
+#if __MonoCS__ && INTENSITY
+			intensity.WriteToPPM("intensity.ppm");
+#else
+			intensity.WriteToPNG("intensity.png");
+#endif
 			return im;
 		}
 

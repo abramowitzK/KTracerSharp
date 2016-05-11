@@ -1,5 +1,5 @@
 ﻿//uncomment this for antialiasing
-#define ANTIALIAS
+//#define ANTIALIAS
 using System;
 using System.Diagnostics;
 using OpenTK;
