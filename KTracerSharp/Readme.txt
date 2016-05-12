@@ -26,3 +26,6 @@ Using 5% tolerance. Most of the code for implementing the Supersampling AA is in
 website: cs.drexel.edu/~kra46/cs431.html
 
 Used the 1k bunny, the 5k cow and icosohedron and 4 spheres. There are 2 white lights in the same position as assignment 2 and 3
+
+For the intensity image. I started with a base color of (0.05,0.05,0.05,1.0).
+Then multiplied the number of rays per pixel by this color.
