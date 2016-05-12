@@ -60,7 +60,7 @@ namespace KTracerSharp {
 			scene.AddObject(mesh);
 			scene.AddObject(mesh2);
 
-			//scene.AddObject(mesh4);
+			scene.AddObject(mesh4);
 			var i = scene.Render();
 			watch.Stop();
 			Console.WriteLine(watch.ElapsedMilliseconds/1000.0);
