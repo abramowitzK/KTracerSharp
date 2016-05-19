@@ -96,9 +96,11 @@ namespace KTracerSharp {
 		}
 
 		public override void Rotate(float x, float y, float z) {
-			var m = new Quaternion(x,y,z);
+			var m = new Quaternion(OpenTK.MathHelper.DegreesToRadians(x), OpenTK.MathHelper.DegreesToRadians(y), OpenTK.MathHelper.DegreesToRadians(z));
 			for (var i = 0; i < m_vertices.Count; i++) {
 				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
+				m_vertices[i].Normal = Vector3.Transform(m_vertices[i].Normal, m);
+				m_vertices[i].Normal.Normalize();
 			}
 		}
 
@@ -106,6 +108,8 @@ namespace KTracerSharp {
 			var m = Matrix4.CreateTranslation(x, y, z);
 			for (var i = 0; i < m_vertices.Count; i++) {
 				m_vertices[i].Point = Vector3.TransformPosition(m_vertices[i].Point, m);
+				//m_vertices[i].Normal = Vector3.Transform(m_vertices[i].Normal, m);
+				//m_vertices[i].Normal.Normalize();
 			}
 		}
 
@@ -113,6 +117,16 @@ namespace KTracerSharp {
 			var m = Matrix4.CreateScale(s);
 			for (var i = 0; i < m_vertices.Count; i++) {
 				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
+				//m_vertices[i].Normal = Vector3.Transform(m_vertices[i].Normal, m);
+				//m_vertices[i].Normal.Normalize();
+			}
+		}
+		public  void Scale(float x, float y, float z) {
+			var m = Matrix4.CreateScale(x,y,z);
+			for (var i = 0; i < m_vertices.Count; i++) {
+				m_vertices[i].Point = Vector3.Transform(m_vertices[i].Point, m);
+				//m_vertices[i].Normal = Vector3.Transform(m_vertices[i].Normal, m);
+				//m_vertices[i].Normal.Normalize();
 			}
 		}
 		//This is not the most optimal sphere but calculating the optimal one is more difficult than I anticipated...

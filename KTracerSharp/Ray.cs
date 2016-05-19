@@ -85,8 +85,18 @@ namespace KTracerSharp {
 				if (parent.LeftChild != null && parent.RightChild != null) {
 					bool leftHit = false;
 					bool rightHit = false;
+					RenderObject temp = null;
+					float t = float.MaxValue;
+					Vector3 tn = Vector3.One;
+					Vector3 tp = Vector3.One;
 					leftHit = IntersectBVH(parent.LeftChild, ref tmin, ref inter, ref norm, ref closest);
-					rightHit = IntersectBVH(parent.RightChild, ref tmin, ref inter, ref norm, ref closest);
+					rightHit = IntersectBVH(parent.RightChild, ref t, ref tp, ref tn, ref temp);
+					if (t < tmin) {
+						tmin = t;
+						closest = temp;
+						inter = tp;
+						norm = tn;
+					}
 					return leftHit || rightHit;
 				}
 				else {
@@ -124,6 +134,7 @@ namespace KTracerSharp {
 						}
 					}
 				}*/
+
 				IntersectBVH(s.Root, ref tmin, ref inter, ref norm, ref closestObj);
 				if (closestObj != null) {
 					var col = Vector4.Zero;
@@ -131,24 +142,23 @@ namespace KTracerSharp {
 					var nHit = norm;
 					nHit.Normalize();
 					foreach (var l in s.Lights) {
-						var dir = l.Pos - (pHit + (nHit*0.02f));
+						var dir = l.Pos - (pHit + (nHit*0.002f));
 						dir.Normalize();
-						var lightRay = new Ray(dir, Vector3.Add(pHit, nHit*0.02f));
+						var lightRay = new Ray(dir, Vector3.Add(pHit, nHit*0.002f));
 						var blocked = false;
-						/*float t = float.MaxValue;
-						foreach (var o in s.Objects) {
-						/*blocked = o.Intersect(lightRay, ref t, ref inter, ref norm);
+						float t = float.MaxValue;
+						RenderObject closest = null;
+						blocked = lightRay.IntersectBVH(s.Root, ref t, ref inter, ref norm, ref closest);
 						if (blocked) {
 							//Need to also handle this case : (object1) (Light)  (object2). Should not block light one object 2 unless obj1 is in between light and object2;
 							var light = l.Pos - lightRay.Start;
 							var intRay = inter - pHit;
 							if (light.Length > intRay.Length) {
-								//Object is between light and hit point
-								break;
+
 							}
-							blocked = false;
+							else
+								blocked = false;
 						}
-						}*/
 						if (!blocked) {
 							var lightDir = l.Pos - lightRay.Start;
 							var attenuation = 1.0f/lightDir.LengthSquared;
@@ -157,9 +167,9 @@ namespace KTracerSharp {
 							var lD = l.Intensity*attenuation*Math.Max(0, Vector3.Dot(nHit, lightDir));
 							var spec =
 								(float) (l.Intensity*attenuation*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), closestObj.Mat.Shinyness)));
-							col += lD*closestObj.Mat.DiffuseColor*closestObj.Mat.KD;
-							col += spec*closestObj.Mat.SpecularColor*closestObj.Mat.KS;
-							col += closestObj.Mat.AmbientColor*closestObj.Mat.KA;
+							col += lD*closestObj.Mat.DiffuseColor*closestObj.Mat.KD + spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
+							/*col += spec*closestObj.Mat.SpecularColor*closestObj.Mat.KS;
+							col += closestObj.Mat.AmbientColor*closestObj.Mat.KA;*/
 						}
 						else {
 							col = Vector4.Add(col, (new Vector4(0.0f, 0.0f, 0.0f, 1.0f)));

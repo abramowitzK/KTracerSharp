@@ -1,4 +1,4 @@
-﻿#define INTENSITY
+﻿//#define INTENSITY
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -10,7 +10,7 @@ namespace KTracerSharp {
 	public class Scene {
 		public static int MaxTris = 100;
 		public Scene() {
-			Cam = new Camera(new Vector3(20.0f, 0.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(-1f, 0f, -1.0f), 45.0f,
+			Cam = new Camera(new Vector3(0.0f, 5.0f, 20.0f), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0f, -0.25f, -1.0f), 45.0f,
 				10.0f);
 			Objects = new List<RenderObject>();
 			Lights = new List<Light>();
@@ -35,8 +35,8 @@ namespace KTracerSharp {
 			const int width = 1024;
 			var im = new Image(width, height);
 			var intensity = new Image(width, height);
-			/*//Must divide evenly into resolution currently
-			var numThreads = 16;
+			//Must divide evenly into resolution currently
+			/*var numThreads = 16;
 			var rays = Cam.GenerateRays(width, height);
 			var threads = new Task[numThreads];
 			var index = height/numThreads;
