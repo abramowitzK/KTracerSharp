@@ -121,20 +121,9 @@ namespace KTracerSharp {
 		public Vector4 Trace(Scene s, int d) {
 			try {
 				var tmin = float.MaxValue;
-				var inter = Vector3.Zero; //not using these yet.
+				var inter = Vector3.Zero;
 				var norm = Vector3.Zero;
 				RenderObject closestObj = null;
-				/*if (!s.Root.Intersect(this))
-					return new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-				for (var i = 0; i < s.Objects.Count; i++) {
-					if (s.Objects[i].BoundingBox.Intersect(this)) {
-						if (s.Objects[i].Intersect(this, ref tmin, ref inter, ref norm)) {
-								closestObj = s.Objects[i];
-								closestHitInfo = new HitInfo(new Vector3(norm), new Vector3(inter), tmin);
-						}
-					}
-				}*/
-
 				IntersectBVH(s.Root, ref tmin, ref inter, ref norm, ref closestObj);
 				if (closestObj != null) {
 					var col = Vector4.Zero;
@@ -168,8 +157,11 @@ namespace KTracerSharp {
 							var spec =
 								(float) (l.Intensity*attenuation*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), closestObj.Mat.Shinyness)));
 							col += lD*closestObj.Mat.DiffuseColor*closestObj.Mat.KD + spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
-							/*col += spec*closestObj.Mat.SpecularColor*closestObj.Mat.KS;
-							col += closestObj.Mat.AmbientColor*closestObj.Mat.KA;*/
+							if (closestObj.Mat.MType == MaterialType.Reflective && d > 0) {
+								var c1 = -Vector3.Dot(norm, this.Dir);
+								var reflect = this.Dir + (2*norm*c1);
+								col += new Ray(reflect, pHit+(norm*0.002f)).Trace(s, d-1);
+							}
 						}
 						else {
 							col = Vector4.Add(col, (new Vector4(0.0f, 0.0f, 0.0f, 1.0f)));

@@ -10,6 +10,7 @@ namespace KTracerSharp {
 	public enum MaterialType {
 		None,
 		Phong,
+		Reflective,
 	}
 
 	public class Material {
@@ -28,6 +29,17 @@ namespace KTracerSharp {
 			DiffuseColor = dColor;
 			SpecularColor = sColor;
 			MType = MaterialType.Phong;
+			KA = ka;
+			KD = kd;
+			KS = ks;
+
+		}
+		public Material(float shinyness, Vector4 dColor, Vector4 sColor, Vector4 ambient, float ka, float kd, float ks, MaterialType type) {
+			Shinyness = shinyness;
+			AmbientColor = ambient;
+			DiffuseColor = dColor;
+			SpecularColor = sColor;
+			MType = type;
 			KA = ka;
 			KD = kd;
 			KS = ks;
