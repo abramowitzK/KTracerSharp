@@ -10,7 +10,7 @@ namespace KTracerSharp {
 	public class Scene {
 		public static int MaxTris = 100;
 		public Scene() {
-			Cam = new Camera(new Vector3(-10.0f, 40f, 20.0f), new Vector3(1.0f, 0.0f, 0.0f), new Vector3(0.2f, -0.8f, -.4f), 60.0f,
+			Cam = new Camera(new Vector3(20.0f, 40f, 40.0f), new Vector3(1.0f, 0.0f, 0.0f), new Vector3(0f, 0f, 0f), 60.0f,
 				10.0f);
 			Objects = new List<RenderObject>();
 			Lights = new List<Light>();

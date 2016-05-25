@@ -8,12 +8,13 @@ namespace KTracerSharp {
 	public class Camera {
 		public static float Tolerance = 0.05f;
 		public Vector4 BaseColor;
-		public Camera(Vector3 pos, Vector3 right, Vector3 forward, float viewAngle, float distanceToPlane) {
+		public Camera(Vector3 pos, Vector3 right, Vector3 lookAtPoint, float viewAngle, float distanceToPlane) {
 			ViewAngle = ConvertToRadians(viewAngle);
 			DistanceToPlane = distanceToPlane;
 			Position = pos;
 			Right = right.Normalized();
-			Forward = forward.Normalized();
+			Forward = lookAtPoint - pos;
+			Forward = Forward.Normalized();
 			Up = Vector3.Cross(right, Forward).Normalized();
 			BaseColor = new Vector4(0.05f, 0.05f, 0.05f, 1.0f);
 		}

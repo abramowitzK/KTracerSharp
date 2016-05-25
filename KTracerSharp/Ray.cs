@@ -160,7 +160,7 @@ namespace KTracerSharp {
 							if (closestObj.Mat.MType == MaterialType.Reflective && d > 0) {
 								var c1 = -Vector3.Dot(norm, this.Dir);
 								var reflect = this.Dir + (2*norm*c1);
-								col += new Ray(reflect, pHit+(norm*0.002f)).Trace(s, d-1);
+								col += closestObj.Mat.KR*new Ray(reflect, pHit+(norm*0.002f)).Trace(s, d-1);
 							}
 						}
 						else {
