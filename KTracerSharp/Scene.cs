@@ -48,7 +48,7 @@ namespace KTracerSharp {
 			Cam.GenerateRays(width, height, ref im, this, ref intensity);
 #if __MonoCS__ && INTENSITY
 			intensity.WriteToPPM("intensity.ppm");
-#else
+#elif INTENSITY
 			intensity.WriteToPNG("intensity.png");
 #endif
 			return im;
