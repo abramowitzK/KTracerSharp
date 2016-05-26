@@ -25,7 +25,7 @@ namespace KTracerSharp {
 			var mesh3 = loader.GetMesh("box.smf");
 			var mesh2 = loader.GetMesh("lwall.smf");
 			mesh2.Mat = new Material(150f, new Vector4(0.1f, 0.1f, 1.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-				new Vector4(0.1f, 0.1f, 1.0f, 1f), 0.15f, 0.5f, 0.5f);
+				new Vector4(0.1f, 0.1f, 1.0f, 1f), 0.15f, 0.4f, 0.6f, 1.0f);
 			var mesh4 = loader.GetMesh("bound-cow.smf");
 			var mesh5 = loader.GetMesh("rwall.smf");
 			var scene = new Scene();
@@ -58,7 +58,7 @@ namespace KTracerSharp {
 			mesh3.Mat = new Material(20f, new Vector4(0.8f, 0.0f, 0.0f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
 				new Vector4(0.8f, 0f, 0.0f, 1f), 0.05f, 0.7f, 0.9f);
 			mesh4.Mat = new Material(150f, new Vector4(0.5f, 0.7f, 0.3f, 1.0f), new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-	new Vector4(0.5f, 0.7f, 0.3f, 1f), 0.1f, 0.6f, 0.4f);
+	new Vector4(0.5f, 0.7f, 0.3f, 1f), 0.0f, 0.2f, 0.2f, 0.6f);
 			mesh2.UniformScale(3f);
 			mesh2.Translate(-6.0f, -6.0f, 0f);
 			mesh3.Rotate(90f, 0f, 0f);

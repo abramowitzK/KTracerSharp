@@ -159,8 +159,8 @@ namespace KTracerSharp {
 							col += lD*closestObj.Mat.DiffuseColor*closestObj.Mat.KD + spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
 							if (closestObj.Mat.MType == MaterialType.Reflective && d > 0) {
 								var c1 = -Vector3.Dot(norm, this.Dir);
-								var reflect = this.Dir + (2*norm*c1);
-								col += closestObj.Mat.KR*new Ray(reflect, pHit+(norm*0.002f)).Trace(s, d-1);
+								var reflect = this.Dir + (2*nHit*c1);
+								col += closestObj.Mat.KR*new Ray(reflect, pHit+(reflect*0.002f)).Trace(s, d-1);
 							}
 						}
 						else {
