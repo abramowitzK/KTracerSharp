@@ -6,6 +6,7 @@ using OpenTK.Audio.OpenAL;
 
 namespace KTracerSharp {
 	public class Camera {
+		public static int numRecursions=7;
 		public static float Tolerance = 0.05f;
 		public Vector4 BaseColor;
 		public Camera(Vector3 pos, Vector3 right, Vector3 lookAtPoint, float viewAngle, float distanceToPlane) {
@@ -53,25 +54,25 @@ namespace KTracerSharp {
 					dir = (posOfPixel + sJ * (i / (float)(hRes - 1)) * Right - sK * (j / (float)(vRes - 1)) * y) - Position;
 					dir = dir.Normalized();
 					if (!rays[i, j]) {
-						tempColors[i, j] = new Ray(new Vector3(dir), Position).Trace(s, 2);
+						tempColors[i, j] = new Ray(new Vector3(dir), Position).Trace(s, numRecursions);
 						rays[i, j] = true;
 					}
 					dir2 = (posOfPixel + sJ * ((i + 1) / (float)(hRes - 1)) * Right - sK * (j / (float)(vRes - 1)) * y) - Position;
 					dir2 = dir2.Normalized();
 					if (!rays[i + 1, j]) {
-						tempColors[i+1, j] = new Ray(new Vector3(dir2), Position).Trace(s, 2);
+						tempColors[i+1, j] = new Ray(new Vector3(dir2), Position).Trace(s, numRecursions);
 						rays[i + 1, j] = true;
 					}
 					dir3 = (posOfPixel + sJ * (i / (float)(hRes - 1)) * Right - sK * ((j + 1) / (float)(vRes - 1)) * y) - Position;
 					dir3 = dir3.Normalized();
 					if (!rays[i, j + 1]) {
-						tempColors[i, j+1] = new Ray(new Vector3(dir3), Position).Trace(s, 2);
+						tempColors[i, j+1] = new Ray(new Vector3(dir3), Position).Trace(s, numRecursions);
 						rays[i, j + 1] = true;
 					}
 					dir4 = (posOfPixel + sJ * ((i + 1) / (float)(hRes - 1)) * Right - sK * ((j + 1) / (float)(vRes - 1)) * y) - Position;
 					dir4 = dir4.Normalized();
 					if (!rays[i + 1, j + 1]) {
-						tempColors[i+1, j+1] = new Ray(new Vector3(dir4), Position).Trace(s, 2);
+						tempColors[i+1, j+1] = new Ray(new Vector3(dir4), Position).Trace(s, numRecursions);
 						rays[i + 1, j + 1] = true;
 					}
 					if (!IsPixelOkay(ref tempColors[i, j], ref tempColors[i + 1, j], ref tempColors[i + 1, j + 1], ref tempColors[i, j + 1])) {

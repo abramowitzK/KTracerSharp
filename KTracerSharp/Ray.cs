@@ -22,8 +22,16 @@ namespace KTracerSharp {
 		public Ray(Vector3 dir, Vector3 start) {
 			Dir = dir;
 			Start = start;
+			Inside = false;
 		}
 
+		public Ray(Vector3 dir, Vector3 start, bool inside) {
+			Dir = dir;
+			Start = start;
+			Inside = inside;
+		}
+
+		public bool Inside { get; set; }
 		public Vector3 Dir { get; set; }
 
 		public Vector3 Start { get; set; }
@@ -137,16 +145,19 @@ namespace KTracerSharp {
 						var blocked = false;
 						float t = float.MaxValue;
 						RenderObject closest = null;
-						blocked = lightRay.IntersectBVH(s.Root, ref t, ref inter, ref norm, ref closest);
-						if (blocked) {
-							//Need to also handle this case : (object1) (Light)  (object2). Should not block light one object 2 unless obj1 is in between light and object2;
-							var light = l.Pos - lightRay.Start;
-							var intRay = inter - pHit;
-							if (light.Length > intRay.Length) {
+						if (!Inside) {
 
+							blocked = lightRay.IntersectBVH(s.Root, ref t, ref inter, ref norm, ref closest);
+							if (blocked) {
+								//Need to also handle this case : (object1) (Light)  (object2). Should not block light one object 2 unless obj1 is in between light and object2;
+								var light = l.Pos - lightRay.Start;
+								var intRay = inter - pHit;
+								if (light.Length > intRay.Length) {
+
+								}
+								else
+									blocked = false;
 							}
-							else
-								blocked = false;
 						}
 						if (!blocked) {
 							var lightDir = l.Pos - lightRay.Start;
@@ -161,6 +172,26 @@ namespace KTracerSharp {
 								var c1 = -Vector3.Dot(norm, this.Dir);
 								var reflect = this.Dir + (2*nHit*c1);
 								col += closestObj.Mat.KR*new Ray(reflect, pHit+(reflect*0.002f)).Trace(s, d-1);
+							}
+							if (closestObj.Mat.MType == MaterialType.Refractive && d > 0) {
+								var index = closestObj.Mat.N;
+								var n = 1.0f/index;
+								var normal = norm;
+								var cosI = Inside ? -1f : 1f*Vector3.Dot(normal, Dir);
+								var cos2T = 1.0f - n*n*(1.0f - cosI*cosI);
+								float trmin = 0f;
+								var rHit = Vector3.Zero;
+								var rNorm = Vector3.Zero;
+								if (cos2T > 0.0f) {
+									var refractDir = (n*Dir) + (n*cosI - (float) Math.Sqrt(cos2T))*normal;
+									var c = new Ray(refractDir, pHit + refractDir*0.002f, !Inside).Trace(s, d - 1);
+									col += c;
+								}
+								else {
+									var refractDir = -Dir;
+									var c = new Ray(refractDir, pHit + refractDir * 0.002f, !Inside).Trace(s, d - 1);
+									col += c;
+								}
 							}
 						}
 						else {
