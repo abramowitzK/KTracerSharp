@@ -125,6 +125,15 @@ namespace KTracerSharp {
 			return false;
 
 		}
+
+		public Vector2 CalculateUV(Vector3 hit) {
+			Vector2 ret = new Vector2();
+			hit.Normalize();
+			ret.X = 0.5f + (float) Math.Atan2(hit.Z, hit.X)/(2.0f*(float) Math.PI);
+			ret.Y = 0.5f - (float) Math.Asin(hit.Y)/(float)Math.PI;
+			return ret;
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Vector4 Trace(Scene s, int d) {
 			try {
@@ -167,7 +176,18 @@ namespace KTracerSharp {
 							var lD = l.Intensity*attenuation*Math.Max(0, Vector3.Dot(nHit, lightDir));
 							var spec =
 								(float) (l.Intensity*attenuation*(Math.Pow(Math.Max(0, Vector3.Dot(nHit, h)), closestObj.Mat.Shinyness)));
-							col += lD*closestObj.Mat.DiffuseColor*closestObj.Mat.KD + spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
+							if (closestObj.Mat.MType != MaterialType.Textured && closestObj.Mat.MType != MaterialType.Procedural) {
+
+								col += lD * closestObj.Mat.DiffuseColor * closestObj.Mat.KD + spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS +
+									   closestObj.Mat.AmbientColor * closestObj.Mat.KA;
+							} else if (closestObj.GetObjectType() == ObjectType.Sphere && closestObj.Mat.MType == MaterialType.Textured) {
+								var uv = CalculateUV(pHit);
+								col += lD * ((TexturedMaterial)closestObj.Mat).GetDiffuse(uv.X, uv.Y) * closestObj.Mat.KD +
+									   spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
+							} else if (closestObj.Mat.MType == MaterialType.Procedural) {
+								col += lD * ((ProceduralMaterial)closestObj.Mat).GetColor(pHit.X, pHit.Y, pHit.Z) * closestObj.Mat.KD +
+											spec * closestObj.Mat.SpecularColor * closestObj.Mat.KS + closestObj.Mat.AmbientColor * closestObj.Mat.KA;
+							}
 							if (closestObj.Mat.MType == MaterialType.Reflective && d > 0) {
 								var c1 = -Vector3.Dot(norm, this.Dir);
 								var reflect = this.Dir + (2*nHit*c1);
@@ -198,7 +218,12 @@ namespace KTracerSharp {
 							col = Vector4.Add(col, (new Vector4(0.0f, 0.0f, 0.0f, 1.0f)));
 						}
 					}
-					return col + closestObj.Mat.AmbientColor*closestObj.Mat.KA;
+					if (closestObj.Mat.MType != MaterialType.Textured)
+						return col + closestObj.Mat.AmbientColor*closestObj.Mat.KA;
+					else {
+						var uv = CalculateUV(pHit);
+						return col + ((TexturedMaterial)closestObj.Mat).GetDiffuse(uv.X, uv.Y) * closestObj.Mat.KA;
+					}
 				}
 				
 			}

@@ -9,6 +9,8 @@ using OpenTK.Graphics.OpenGL;
 namespace KTracerSharp {
 	public enum MaterialType {
 		None,
+		Textured,
+		Procedural,
 		Phong,
 		Reflective,
 		Refractive,
@@ -16,7 +18,7 @@ namespace KTracerSharp {
 
 	public class Material {
 		public float Shinyness { get; set; }
-		public float KD { get; set; }
+		public virtual float KD { get; set; }
 		public float KA { get; set; }
 		public float KS { get; set; }
 		public float KR { get; set; }
