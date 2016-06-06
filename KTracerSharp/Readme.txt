@@ -45,3 +45,23 @@ Reflections:
 Starting at line 160
 
 There scene is assembled and parameters assigned in Program.cs. 
+
+6/26/2016
+Assignment 6 Update:
+
+website cs.drexel.edu/~kra46/cs431.html
+
+The code implementing refractions is in Ray.cs in the Trace function
+
+Starting at line 176 and ending at line 194
+Program.cs contains the code that sets up all the objects with materials and transforms.
+
+There is one white light at (0,10,20) with 400 intensity.
+
+There is a purely refractive sphere which you can see the cow and bunny through as well as a purely refractive icosohedron.
+
+The bunny is blue with .4 kd and .6 ks and 100 as it's specular exponent
+
+The cow is red with .1 ka, .3 kd, .6 ks and 100 specular exponent
+
+the background is a scaled box with a green color 150 specular exponent .15 ka, .4 kd .6 ks
