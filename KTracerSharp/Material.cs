@@ -11,6 +11,7 @@ namespace KTracerSharp {
 		None,
 		Phong,
 		Reflective,
+		Refractive,
 	}
 
 	public class Material {
@@ -18,6 +19,8 @@ namespace KTracerSharp {
 		public float KD { get; set; }
 		public float KA { get; set; }
 		public float KS { get; set; }
+		public float KR { get; set; }
+		public float N { get; set; }
 		public Vector4 AmbientColor { get; set; }
 		public Vector4 DiffuseColor { get; set; }
 		public Vector4 SpecularColor { get; set; }
@@ -32,18 +35,33 @@ namespace KTracerSharp {
 			KA = ka;
 			KD = kd;
 			KS = ks;
+			KR = 0;
+			N = 1f;
 
 		}
-		public Material(float shinyness, Vector4 dColor, Vector4 sColor, Vector4 ambient, float ka, float kd, float ks, MaterialType type) {
+		public Material(float shinyness, Vector4 dColor, Vector4 sColor, Vector4 ambient, float ka, float kd, float ks, float kr) {
 			Shinyness = shinyness;
 			AmbientColor = ambient;
 			DiffuseColor = dColor;
 			SpecularColor = sColor;
-			MType = type;
+			MType = MaterialType.Reflective;
 			KA = ka;
 			KD = kd;
 			KS = ks;
-
+			KR = kr;
+			N = 1f;
+		}
+		public Material(float shinyness, Vector4 dColor, Vector4 sColor, Vector4 ambient, float ka, float kd, float ks, bool refractive, float indexOfRefraction) {
+			Shinyness = shinyness;
+			AmbientColor = ambient;
+			DiffuseColor = dColor;
+			SpecularColor = sColor;
+			MType = MaterialType.Refractive;
+			KA = ka;
+			KD = kd;
+			KS = ks;
+			KR = 0;
+			N = indexOfRefraction;
 		}
 	}
 }

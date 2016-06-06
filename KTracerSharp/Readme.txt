@@ -29,3 +29,19 @@ Used the 1k bunny, the 5k cow and icosohedron and 4 spheres. There are 2 white l
 
 For the intensity image. I started with a base color of (0.05,0.05,0.05,1.0).
 Then multiplied the number of rays per pixel by this color.
+
+
+5/26/2016
+Assignment 5 Update:
+
+used same SSAA code from hw 4 with same parameters.
+
+website: cs.drexel.edu/~kra46/cs431.html
+
+The code implementing shadows and also the code that implements reflections.
+Shadows:
+Starting at line 139
+Reflections:
+Starting at line 160
+
+There scene is assembled and parameters assigned in Program.cs. 
